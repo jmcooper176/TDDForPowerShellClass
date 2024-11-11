@@ -1,5 +1,3 @@
-using namespace System
-
 <#
     class Vine
 #>
@@ -8,6 +6,10 @@ class Vine: System.IDisposable
     <#
         Public Properties
     #>
+    [Type]$Type = [object]
+
+    [AllowNull()]
+    [object]$Value
 
     <#
         Private Properties
@@ -17,7 +19,29 @@ class Vine: System.IDisposable
     <#
         Constructors
     #>
-    Vine() { }
+    Vine()
+    {
+        $this.Type = [object] -as [Type]
+        $this.Value = $null
+    }
+
+    Vine([object]$Value)
+    {
+        $this.Type = $Value.GetType()
+        $this.Value = $Value -as $this.Type
+    }
+
+    Vine([Type]$Type)
+    {
+        $this.Type = $Type
+        $this.Value = $null
+    }
+
+    Vine([object]$Value, [Type]$Type)
+    {
+        $this.Type = $Type
+        $this.Value = $Value -as $this.Type
+    }
 
     <#
         Public Methods
@@ -29,6 +53,8 @@ class Vine: System.IDisposable
     # override from here
     [void]Dispose([bool]$disposing) {
         if ($disposing -and -not $this.Disposed) {
+            $this.Value = $null
+            $this.Type = [object] -as [Type]
             $this.Disposed = $true
         }
     }
@@ -36,6 +62,12 @@ class Vine: System.IDisposable
     <#
         Static Methods
     #>
+    static [void]Swap([Vine]$First, [Vine]$Second)
+    {
+        $temp = $First.Value
+        $First.Emplace($Second.Value)
+        $Second.Emplace($temp)
+    }
 }
 
 <#

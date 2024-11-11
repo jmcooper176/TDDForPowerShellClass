@@ -8,7 +8,6 @@ using module ..\Vine\Vine.psd1
 
 BeforeAll {
     $ModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\Vine\Vine.psd1' -Resolve
-    Get-Module -Name 'Vine' | Remove-Module -Force -Verbose -ErrorAction SilentlyContinue
     Import-Module -Name $ModulePath -Force -Verbose
 
     Set-Variable -Name TheAnswer -Option Constant -Value 42

@@ -1,3 +1,4 @@
+using module ..\Vine\Vine.psd1
 <#
     Vine Pester Tests Based on the Pester Framework and STL Any Class
 
@@ -5,8 +6,7 @@
 #>
 
 BeforeAll {
-    $ModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Vine\Vine.psd1' -Resolve
-    Get-Module -Name 'Vine' | Remove-Module -Force -Verbose -ErrorAction SilentlyContinue
+    $ModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\Vine\Vine.psd1' -Resolve
     Import-Module -Name $ModulePath -Force -Verbose
 
     Set-Variable -Name TheAnswer -Option Constant -Value 42
