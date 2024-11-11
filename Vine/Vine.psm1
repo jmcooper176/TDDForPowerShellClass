@@ -1,3 +1,5 @@
+using namespace System
+
 <#
     class Vine
 #>
@@ -68,12 +70,10 @@ function New-Vine {
     if ($PSCmdlet.ShouldProcess($target, $CmdletName)) {
         $instance = [Vine]::new()
 
-        if ($PSBoundParameters.ContainsKey('Value')) {
-            $vine.Value = $Value -as $Type
-        }
+        $instance.Type = $Type
 
-        if ($PSBoundParameters.ContainsKey('Type')) {
-            $instance.Type = $Type
+        if ($PSBoundParameters.ContainsKey('Value')) {
+            $instance.Value = $Value -as $instance.Type
         }
 
         $instance | Write-Output
