@@ -1,4 +1,5 @@
 using module ..\Vine\Vine.psd1
+
 <#
     Vine Pester Tests Based on the Pester Framework and STL Any Class
 
@@ -58,14 +59,11 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
         }
 
         It -Name 'Should be able to create a Vine with no parameters which is of Type [Vine]' -Tag 'Unit Test' {
-            # Arrange
+            # Arrange and Act
             $vine = New-Vine
 
-            # Act
-            $type = $vine.GetType()
-
             # Assert
-            $type.Name | Should -Be 'Vine'
+            $vine | Should -BeOfType 'Vine'
         }
 
         It -Name 'Should be able to create a Vine with a value' -Tag 'Unit Test' {
@@ -82,14 +80,11 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
         }
 
         It -Name 'Should be able to create a Vine with a value which is of Type [Vine]' -Tag 'Unit Test' {
-            # Arrange
+            # Arrange and Act
             $vine = New-Vine -Value $TheAnswer
 
-            # Act
-            $type = $vine.GetType()
-
             # Assert
-            $type.Name | Should -Be 'Vine'
+            $vine | Should -BeOfType [Vine]
         }
 
         It -Name 'Should be able to create a Vine with a value and a type' -Tag 'Unit Test' {
@@ -121,14 +116,11 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
         }
 
         It -Name 'Should be able to create a Vine which is of Type [Vine]' -Tag 'Unit Test' {
-            # Arrange
+            # Arrange and Act
             $vine = New-Object -TypeName 'Vine'
 
-            # Act
-            $type = $vine.GetType()
-
             # Assert
-            $type.Neme | Should -Be 'Vine'
+            $vine.GetType() | Should -BeOfType [Vine]
         }
 
         It -Name 'Should be able to create a Vine with Parameter Value' -Tag 'Unit Test' {
@@ -145,14 +137,11 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
         }
 
         It -Name 'Should be able to create a Vine with Parameter Value which is of Type [Vine]' -Tag 'Unit Test' {
-            # Arrange
+            # Arrange and Act
             $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer
 
-            # Act
-            $type = $vine.GetType()
-
             # Assert
-            $type.Name | Should -Be 'Vine'
+            $vine.GetType() | Should -BeOfType [Vine]
         }
 
         It -Name 'Should be able to create a Vine with Parameter Type [Int32]' -Tag 'Unit Test' {
@@ -169,14 +158,11 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
         }
 
         It -Name 'Should be able to create a Vine with Parameter Type [Int32] which is of Type [Vine]' -Tag 'Unit Test' {
-            # Arrange
+            # Arrange and Act
             $vine = New-Object -TypeName 'Vine' -ArgumentList ([Int32] -as [Type])
 
-            # Act
-            $type = $vine.GetType()
-
             # Assert
-            $type.Name | Should -Be 'Vine'
+            $vine.GetType() | Should -BeOfType [Vine]
         }
 
         It -Name 'Should be able to create a Vine with Parameter Value and Parameter Type [Int32]' -Tag 'Unit Test' {
@@ -196,11 +182,8 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
             # Arrange
             $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, ([Int32] -as [Type])
 
-            # Act
-            $type = $vine.GetType()
-
             # Assert
-            $type.Name | Should -Be 'Vine'
+            $vine.GetType() | Should -BeOfType [Vine]
         }
 
         It -Name 'Should be able to create a Vine with property FullName' -Tag 'Unit Test' {
@@ -289,6 +272,14 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
 
             # Assert
             Test-HasMethod -Object $vine -Name 'HasValue' | Should -BeTrue
+        }
+
+        It -Name 'Should be able to create a Vine with method OfType' -Tag 'Unit Test' {
+            # Arrange, Act, and Assert
+            $vine = New-Object -TypeName 'Vine'
+
+            # Assert
+            Test-HasMethod -Object $vine -Name 'OfType' | Should -BeTrue
         }
 
         It -Name 'Should be able to create a Vine with method Swap' -Tag 'Unit Test' {

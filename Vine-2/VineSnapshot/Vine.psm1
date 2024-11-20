@@ -1,3 +1,5 @@
+using module .\Vine\Vine.psd1
+
 <#
     class Vine
 #>
@@ -6,10 +8,6 @@ class Vine: System.IDisposable
     <#
         Public Properties
     #>
-    [string]$FullName = [Vine].FullName
-    
-    [string]$Name = [Vine].Name
-
     [Type]$Type = [object]
 
     [AllowNull()]
@@ -25,17 +23,23 @@ class Vine: System.IDisposable
     #>
     Vine()
     {
-        $this.Type = [object]
+        $this.Type = [object] -as [Type]
         $this.Value = $null
     }
 
-    Vine([object]$Value)
+    Vine($Value)
     {
         $this.Type = $Value.GetType()
         $this.Value = $Value -as $this.Type
     }
 
-    Vine([object]$Value, [Type]$Type)
+    Vine($Type)
+    {
+        $this.Type = $Type
+        $this.Value = $null
+    }
+
+    Vine($Value, $Type)
     {
         $this.Type = $Type
         $this.Value = $Value -as $this.Type
@@ -55,21 +59,6 @@ class Vine: System.IDisposable
             $this.Type = [object] -as [Type]
             $this.Disposed = $true
         }
-    }
-
-    [object]GetValue()
-    {
-        return $this.Value
-    }
-
-    [object]GetValue([Type]$ToType)
-    {
-        return $this.Value -as $ToType
-    }
-
-    [Type]OfType()
-    {
-        return $this.Type
     }
 
     <#
@@ -102,20 +91,29 @@ function New-Vine {
     Set-StrictMode -Version 3.0
     Set-Variable -Name 'CmdletName' -Option ReadOnly -Value $PSCmdlet.MyInvocation.MyCommand.Name -WhatIf:$false
 
-    if ($PSBoundParameters.ContainsKey('Value') -and $PSBoundParameters.ContainsKey('Type')) {
-        if ($PSCmdlet.ShouldProcess("Vine class with the value '$($Value)' and the type '$($Type)'", $CmdletName)) {
-            [Vine]::new($Value, $Type) | Write-Output
+    if ($PSBoundParameters.ContainsKey('Value')) {
+        if ($null -ne $Value) {
+            $target = "Using Value '$($Value)' and Type '$($Type.Name)'"
+        } else {
+            $target = "Using Value <null> and Type '$($Type.Name)'"
         }
+    } else {
+        $target = "Using Value <null> and Type '$($Type.Name)'"
     }
-    elseif ($PSBoundParameters.ContainsKey('Value')) {
-        if ($PSCmdlet.ShouldProcess("Vine class with the value '$($Value)'", $CmdletName)) {
-            [Vine]::new($Value) | Write-Output
+
+    if ($PSCmdlet.ShouldProcess($target, $CmdletName)) {
+        $instance = [Vine]::new()
+
+        $instance.Type = $Type
+
+        if ($PSBoundParameters.ContainsKey('Value')) {
+            $instance.Value = $Value -as $instance.Type
         }
-    }
-    else {
-        if ($PSCmdlet.ShouldProcess("Vine class default constructor", $CmdletName)) {
-            [Vine]::new() | Write-Output
-        }
+
+        $instance | Write-Output
+    } else {
+        Write-Warning -Message "$($CmdletName) : WhatIf Passed : $target"
+        $null | Write-Output
     }
 
     <#
