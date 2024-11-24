@@ -299,7 +299,7 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
 
             It -Name "Construct Vine with a value and a type and vine should be of type 'Vine'" -Tag 'Unit Test' {
             # Arrange
-                $vine = New-Object -Value $TheAnswer, ([Int32] -as [Type])
+                $vine = New-Vine -Value $TheAnswer, ([Int32] -as [Type])
 
                 # Act
                 $type = $vine.GetType()
@@ -505,7 +505,7 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
 
             It -Name 'Construct Vine with a value' -Tag 'Unit Test' {
                 # Arrange, Act, and Assert
-                { New-Object -ArgumentList $TheAnswer } | Should -Not -Throw
+                { New-Object -TypeName 'Vine' -ArgumentList $TheAnswer } | Should -Not -Throw
             }
 
             It -Name 'Construct Vine with a value and vine should not be null or empty' -Tag 'Unit Test' {
@@ -561,7 +561,7 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
 
             It -Name 'Construct Vine with a value and a type' -Tag 'Unit Test' {
                 # Arrange, Act, and Assert
-                { New-Object -ArgumentList $TheAnswer, ([Int32] -as [Type]) } | Should -Not -Throw
+                { New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, ([Int32] -as [Type]) } | Should -Not -Throw
             }
 
             It -Name 'Construct Vine with a value and a type and vine should not be null or empty' -Tag 'Unit Test' {
