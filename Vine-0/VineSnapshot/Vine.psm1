@@ -57,21 +57,27 @@ function New-Vine {
     Set-StrictMode -Version 3.0
     Set-Variable -Name 'CmdletName' -Option ReadOnly -Value $PSCmdlet.MyInvocation.MyCommand.Name -WhatIf:$false
 
-    if ($PSBoundParameters.ContainsKey('Value')) {
+    if ($PSBoundParameters.ContainsKey('Value') -and $PSBoundParameters.ContainsKey('Type')) {
         if ($null -ne $Value) {
             $target = "Using Value '$($Value)' and Type '$($Type.Name)'"
         } else {
             $target = "Using Value <null> and Type '$($Type.Name)'"
         }
+    } elseif ($PSBoundParameters.ContainsKey('Value')) {
+        if ($null -ne $Value) {
+            $target = "Using Value '$($Value)' and Type 'Object'"
+        } else {
+            $target = "Using Value <null> and Type 'Object'"
+        }
     } else {
-        $target = "Using Value <null> and Type '$($Type.Name)'"
+        $target = "Using Value <null> and Type 'Object'"
     }
 
     if ($PSCmdlet.ShouldProcess($target, $CmdletName)) {
         $instance = [Vine]::new()
 
         $instance.Type = $Type
-
+        
         if ($PSBoundParameters.ContainsKey('Value')) {
             $instance.Value = $Value -as $instance.Type
         }
