@@ -1,7 +1,8 @@
 BeforeAll {
-    $BaseName        = Get-Item -LiteralPath $PSCommandPath | Select-Object -ExpandProperty BaseName
-    $ScriptUnderTest = Join-Path -Path $PSScriptRoot -ChildPath "$BaseName.ps1" -Resolve
-    . $ScriptUnderTest
+    $BaseName = Get-Item -LiteralPath $PSCommandPath | Select-Object -ExpandProperty BaseName
+    $BaseName = $BaseName -replace '\.tests$'
+    $ModuleUnderTest = Join-Path -Path $PSScriptRoot -ChildPath "$BaseName.psd1" -Resolve
+    Import-Module -Name $ModuleUnderTest -Verbose
 
     function Invoke-GitCommit {
         param (
@@ -23,7 +24,7 @@ BeforeAll {
 }
 
 AfterAll {
-    # Clean up
+    Get-Module -ListAvailable | Where-Object -Property Name -EQ $ModuleUnderTest | Remove-Module -Verbose
 }
 
 Describe -Name 'Git Message Test Suite' -Tag 'Test Suite' {
@@ -85,6 +86,18 @@ Describe -Name 'Git Message Test Suite' -Tag 'Test Suite' {
 
                 # Act and Assert
                 Test-Path @testPathSplat | Should -Not -BeNullOrEmpty
+            }
+        }
+
+        Context -'Header -le 50 characters long' {
+            It -Name 'Should be less than or equal to 50 characters' -Tag 'Unit Test' {
+                # Arrange
+
+                # Act
+                $header = Write-Header -Type 'bug' -Id '1234' -Scope 'local' -Title 'Fixing a bug'
+
+                # Assert
+                $header.Length | Should -BeLessOrEqual 50
             }
         }
     }

@@ -1,46 +1,9 @@
-[CmdletBinding()]
-param (
-	[Parameter(Mandatory)]
-	[ValidateSet('bug', 'epic', 'feature', 'issue', 'task', 'test case', 'user story')]
-	[string]
-	$Type,
-
-	[Parameter(Mandatory)]
-	[ValidateNotNullOrEmpty()]
-	[string]
-	$Id,
-
-	[ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
-	[string]
-	$Path,
-
-	[ValidateSet('local', 'global')]
-	[string]
-	$Scope = 'local',
-
-	[Parameter(Mandatory)]
-	[ValidateNotNullOrEmpty()]
-	[string]
-	$Title,
-
-	[switch]
-	$Resolving,
-
-	[switch]
-	$Closing,
-
-	[switch]
-	$All
-)
-
-function Invoke-Git {
+<#
+	Invoke-GitCommit
+#>
+function Invoke-GitCommit {
 	[CmdletBinding(SupportsShouldProcess)]
 	param (
-		[Parameter(Mandatory)]
-		[ValidateSet('add', 'commit', 'pull', 'push', 'status')]
-		[string]
-		$Command,
-
 		[Parameter(Mandatory, ValueFromPipeline)]
 		[ValidateNotNullOrEmpty()]
 		[string]
@@ -70,7 +33,7 @@ function Invoke-Git {
 	}
 
 	PROCESS {
-		$CommandLine = ('git {0} "{1}" {1}' -f $Command, $Message, $option)
+		$CommandLine = ('git commit "{0}" {1}' -f $Command, $Message, $option)
 
 		if ($PSCmdlet.ShouldProcess($CommandLine, $Command)) {
 			& $CommandLine
@@ -85,61 +48,9 @@ function Invoke-Git {
 	}
 }
 
-function Write-Header {
-	[CmdletBinding()]
-	param (
-		[Parameter(Mandatory)]
-		[ValidateSet('bug', 'epic', 'feature', 'issue', 'task', 'test case', 'user story')]
-		[string]
-		$Type,
-
-		[Parameter(Mandatory)]
-		[ValidateNotNullOrEmpty()]
-		[string]
-		$Id,
-
-		[ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
-		[string]
-		$Path,
-
-		[ValidateSet('local', 'global')]
-		[string]
-		$Scope = 'local',
-
-		[Parameter(Mandatory)]
-		[ValidateNotNullOrEmpty()]
-		[string]
-		$Title
-	)
-
-	# HEADER (use one of these templates)
-	# --------------------------------------------------------
-	# bug #id (local source {path} global):  title
-	# epic #id (local source {path} global):  title
-	# feature #id (local source {path} global):  title
-	# issue #id (local source {path} global):  title
-	# task (by type) #id (local source {path} global):  title
-	# test case #id (local source {path} global):  title
-	# user story #id (local source {path} global):  title
-
-	if ($Scope -eq 'local' -and $PSBoundParameters.ContainsKey('Path')) {
-		$value = ('{0} #{1} (local source {2}): {3}' -f $Type, $Id, $Path, $Title)
-	}
-	elseif ($Scope -eq 'global') {
-		$value = ('{0} #{1} (global): {2}' -f $Type, $Id, $Title)
-	}
-	else {
-		$value = ('{0} #{1}: {2}' -f $Type, $Id, $Title)
-	}
-
-	if ($value.Length -gt 50) {
-		$value.Substring(0, 50) | Write-Output
-	}
-	else {
-		$value | Write-Output
-	}
-}
-
+<#
+	Write-Body
+#>
 function Write-Body {
 	[CmdletBinding()]
 	param (
@@ -159,21 +70,55 @@ function Write-Body {
 		$How
 	)
 
-	#  - The BODY should include, using phrasing in the imperative present
-	#    tense (see above):
-	#
-	#		* the motivation for the change answering the question
-	#         'Why?'
-	#       * contrast 'why' with previous behavior answering the
-	#         question 'What?'
-	#       * optionally describe technical aspects for the change
-	#		  answering the question 'How?'
-
 	$Why | Write-Output
 	$What | Write-Output
 	$How | Write-Output
+
+	<#
+		.SYNOPSIS
+		Format body for git commit message
+
+		.DESCRIPTION
+		`Write-Body` is a function that formats the body of a git commit message.
+
+		.PARAMETER Why
+		The motivation for the change answering the question 'Why?'
+
+		.PARAMETER What
+		Contrast 'why' with previous behavior answering the question 'What?'
+
+		.PARAMETER How
+		Optionally describe technical aspects for the change answering the question 'How?'
+
+		.INPUTS
+		None.  `Write-Body` does not accept pipeline input.
+
+		.OUTPUTS
+		System.String.  `Write-Body` returns a string.
+
+		.EXAMPLE
+		PS> Write-Body -Why 'Fix a bug' -What 'Bug was causing a crash' -How 'Fixed a bug in the code'
+
+		Fix a bug
+		Bug was causing a crash
+		Fixed a bug in the code
+
+		.NOTES
+		Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
+
+		The BODY should include, using phrasing in the imperative present tense:
+		* the motivation for the change answering the question 'Why?'
+		* contrast 'why' with previous behavior answering the question 'What?'
+		* optionally describe technical aspects for the change answering the question 'How?'
+
+		.LINK
+		about_Functions_Advanced
+	#>
 }
 
+<#
+	Write-Footer
+#>
 function Write-Footer {
 	[CmdletBinding()]
 	param (
@@ -185,19 +130,16 @@ function Write-Footer {
 		[string]
 		$Id,
 
-		[switch]
-		$Closing,
+		[ValidateSet('Breaking', 'Closing', 'Resolving')]
+		[string]
+		$Mode,
 
-		[switch]
-		$Resolving
+		[TimeSpan]
+		$CapitalizedTime
 	)
 
-	#  - The FOOTER should contain:
-	#
-	#		* Breaking Changes made by this commit
-	#       * issues that this commit Resolves or Closes
-	#       * optionally, Capitalized time in decimal hours for this
-	#         commit greater than or equal to 0.25 hours or more
+	Set-StrictMode -Version 3.0
+	Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
 	if ($Closing.IsPresent -and $Resolving.IsPresent) {
 		Write-Warning -Message "Cannot both Close a <type> #<id> and Resolve it"
@@ -205,135 +147,218 @@ function Write-Footer {
 	}
 
 	if ($PSBoundParameters.ContainsKey('Type') -and $PSBoundParameters.ContainsKey('Id')) {
-		if ($Closing.IsPresent) {
+		if ($Mode -eq 'Breaking') {
+			'Breaking' | Write-Output
+		}
+
+		if ($Mode -eq 'Closing') {
 			'Closing' | Write-Output
 		}
 
-		if ($Resolving.IsPresent) {
+		if ($Mode -eq 'Resolving') {
 			'Closing' | Write-Output
 		}
 
 		('- {0} #{1}' -f $Type, $Id) | Write-Output
 	}
+
+	if ($PSBoundParameters.ContainsKey('CapitalizedTime')) {
+		Set-Variable -Name QuarterHour -Option Constant -Value (New-TimeSpan -Minutes 15 | Select-Object -ExpandProperty Ticks)
+
+		$CapitalizedRounded = [Math]::Round($CapitalizedTime.Ticks / $QuarterHour) * $QuarterHour
+		$CapitalizedTime    = [TimeSpan]$CapitalizedRounded
+		'- Capitalized Time' | Write-Output
+		('{0} hour(s)' -f $CapitalizedTime.TotalHours) | Write-Output
+	}
+
+	<#
+		.SYNOPSIS
+		Format footer for git commit message
+
+		.DESCRIPTION
+		`Write-Footer` is a function that formats the footer of a git commit message.
+
+		.PARAMETER Type
+		The type of the commit message.
+
+		.PARAMETER Id
+		The id of the commit message.
+
+		.PARAMETER Mode
+		The mode of the commit message.  If present, one of `Breaking`, `Closing`, or `Resolving`.
+
+		.INPUTS
+		None.  `Write-Footer` does not accept pipeline input.
+
+		.OUTPUTS
+		System.String.  `Write-Footer` returns a string.
+
+		.EXAMPLE
+		PS> Write-Footer
+
+		.EXAMPLE
+		PS> Write-Footer -CapitalizedTime 0.51
+
+		Capitalized Time
+		- 0.5 hour(s)
+
+		.EXAMPLE
+		PS> Write-Footer -Type 'bug' -Id '1245' -Mode 'Breaking'
+
+		Breaking
+		- bug #1245
+
+		.EXAMPLE
+		PS> Write-Footer -Type 'bug' -Id '1234' -Mode 'Closing'
+
+		Closing
+		- bug #1234
+
+		.EXAMPLE
+		PS> Write-Footer -Type 'bug' -Id '1234' -Mode 'Resolving' -CapitalizedTime '0.25'
+
+		Resolving
+		- bug #1234
+		- Capitalized Time
+		0.25 hour(s)
+
+		.NOTES
+		The FOOTER should contain: 
+		* Breaking Changes made by this commit
+		* issues that this commit Resolves or Closes
+		* optionally, Capitalized time in decimal hours for this commit greater than or equal to 0.25 hours or more
+
+		.LINK
+		about_Functions_Advanced
+	#>
 }
 
-# Hello o/!
-#
-# We just wanted to let you know that we care a great deal about making
-# our git history clean, maintainable and easy to access for all our
-# developers and testers.  Commit messages are very important to us,
-# which is why we have a strict commit message policy in place.  Please
-# use the following guidelines to format all your commit messages:
-#
-#     <type> <id> (<scope>):  <title>
-#     <BLANK LINE>
-#     <body>
-#     <BLANK LINE>
-#     <footer>
-#
-#     Re-establishing the context of a piece of
-#     code is wasteful.  We can’t avoid it
-#     completely, so our efforts should go to
-#     reducing it [as much] as possible.  Commit
-#     messages can do exactly that and as a
-#     result, a commit message shows whether a
-#     developer is a good collaborator.
-#                            -- Peter Hutterer
-#
-# SEVEN RULES of great Git commit messages:
-#
-#          1) Separate subject from body with a blank line
-#          2) Limit the subject line to 50 characters
-#          3) Capitalize the subject line
-#          4) Do not end the subject line with a period
-#          5) Use the imperative mood in the subject line
-#          6) Wrap the body at 72 characters
-#          7) Use the body to explain what and why vs. how
-#
-#                           -- https://chris.beams.io/posts/git-commit/
-#
-# NOTES on format:
-#
-#  - The HEADER is a single line of 50 characters maximum that contains
-#    a succinct description of the change. It contains a type, an
-#    optional scope, and a subject
-#
-#       + <type> describes the kind of change
-#                that this commit is providing.
-#                Allowed types are:
-#
-#             * bug (bug fix)
-#             * epic (container for features and
-#               user stories)
-#             * feature (referring to user
-#               story(s) impementing each feature)
-#             * issue (container for one or more
-#               bugs, technical debt, etc.)
-#             * test case (for Q & A applying to
-#               products for testing)
-#             * user story (define the
-#               applications, requirements, and
-#               elements that teams need to
-#               create)
-#
-#             The many guises of TASKS:
-#
-#                  * task (chore)
-#                  * task (distraction)
-#                  * task (documentation)
-#                  * task ([integration|UI|unit]
-#                    test (when adding additional
-#                    test(s) or modifying tests)
-#                  * task (maintainenance)
-#                  * task (refactor) (logic stays
-#                    constant in effect and
-#                    application, but the syntax
-#                    for how that logic executes
-#                    changes
-#                  * task (style) (formatting,
-#                    punctuation, spelling, . . .)
-#                  * task (technical debt)
-#                  * task (validation)
-#
-#       + #<id> number or other identifier
-#               specifying the type instance to
-#               source control.  NOTE:  In Azure
-#               DevOps, for example, Id's after a
-#               '#' are treated specially and
-#               linked to this title
-#
-#       + <scope> can be anything specifying the
-#                 commit location [local|
-#                 source {path}|global]
-#
-#       + <title> a description of 50 characters
-#                 or less.  You can always modify
-#                 the title later.  It is in the
-#                 following format:
-#
-#             * imperative, present tense:
-#               “change” not “changed” / “changes”
-#             * not Camel or Pascal Case
-#             * no dot (.) at the end
+<#
+	Write-Header
+#>
+function Write-Header {
+	[CmdletBinding()]
+	param (
+		[Parameter(Mandatory)]
+		[ValidateSet('bug', 'epic', 'feature', 'issue', 'task', 'test case', 'user story')]
+		[string]
+		$Type,
 
-if ($PSBoundParameters.ContainsKey('Path')) {
-	$header = Write-Header -Type $Type -Id $Id -Path $Path -Scope $Scope -Title $Title
+		[Parameter(Mandatory)]
+		[ValidateNotNullOrEmpty()]
+		[string]
+		$Id,
+
+		[ValidateSet('local', 'global')]
+		[string]
+		$Scope = 'local',
+
+		[Parameter(Mandatory)]
+		[ValidateNotNullOrEmpty()]
+		[string]
+		$Title
+	)
+
+	Set-StrictMode -Version 3.0
+	Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+	if ($Scope -eq 'local') {
+		$value = ('{0} #{1} (local):  {2}' -f $Type, $Id, $Title)
+	}
+	elseif ($Scope -eq 'global') {
+		$value = ('{0} #{1} (global):  {2}' -f $Type, $Id, $Title)
+	}
+	else {
+		$value = ('{0} #{1}:  {2}' -f $Type, $Id, $Title)
+	}
+
+	if ($value.Length -gt 50) {
+		Write-Warning -Message "$($CmdletName) : Header is longer than 50 characters.  Truncating to 50 characters."
+		$value.Substring(0, 50) | Write-Output
+	}
+	else {
+		$value | Write-Output
+	}
+
+	<#
+		.SYNOPSIS
+		Format header for git commit message
+
+		.DESCRIPTION
+		`Write-Header` is a function that formats the header of a git commit message.
+
+		.PARAMETER Type
+		The type of the commit message.
+
+		.PARAMETER Id
+		The id of the commit message.
+
+		.PARAMETER Scope
+		The scope of the commit message.  If present, one of `local` or `global`.
+
+		.PARAMETER Title
+		The title of the commit message.
+
+		.INPUTS
+		None.  `Write-Header` does not accept pipeline input.
+
+		.OUTPUTS
+		System.String.  `Write-Header` returns a string.
+
+		.EXAMPLE
+		PS> Write-Header -Type 'bug' -Id '1234' -Scope 'local' -Title 'Fixing a bug'
+
+		bug #1234 (local): Fixing a bug
+		
+		.EXAMPLE
+		PS> Write-Header -Type 'epic' -Id '1234' -Scope 'global' -Title 'Creating an epic'
+
+		epic #1234 (global): Creating an epic
+
+		.EXAMPLE
+		PS> Write-Header -Type 'feature' -Id '1234' -Title 'Adding a feature'
+
+		feature #1234: Adding a feature
+
+		.EXAMPLE
+		PS> Write-Header -Type 'issue' -Id '1234' -Title 'Resolving an issue'
+
+		issue #1234: Resolving an issue
+
+		.EXAMPLE
+		PS> Write-Header -Type 'task' -Id '1234' -Scope 'local' -Title 'Completing a task'
+
+		task #1234 (local): Completing a task
+
+		.EXAMPLE
+		PS> Write-Header -Type 'test case' -Id '1234' -Title 'Testing a test case'
+
+		test case #1234: Testing a test case
+
+		.EXAMPLE
+		PS> Write-Header -Type 'user story' -Id '1234' -Title 'Writing a user story'
+
+		user story #1234: Writing a user story
+
+		.NOTES
+		Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
+		The HEADER should contain: 
+		* the type of the commit message
+		* the id of the commit message
+		* optionally, the scope of the commit message
+		* the title of the commit message
+
+		Use one of these as a template:
+		
+		bug #id (local | global):  title
+		epic #id (local | global):  title
+		feature #id (local | global):  title
+		issue #id (local | global):  title
+		task (by type) #id (local | global):  title
+		test case #id (local | global):  title
+		user story #id (local | global):  title
+
+		.LINK
+		about_Functions_Advanced
+	#>
 }
-else {
-	$header = Write-Header -Type $Type -Id $Id -Scope $Scope -Title $Title
-}
-
-if ($Closing.IsPresent -and $Resolving.IsPresent) {
-	Write-Warning -Message "Cannot both Close a <type> #<id> and Resolve it"
-	return
-}
-
-$body = Write-Body
-$footer = Write-Footer -Type $Type -Id $Id -Closing:$Closing.IsPresent -Resolving:$Resolving.IsPresent
-
-$header, [Environment]::NewLine, $body, [Environment]::NewLine, $footer |
-	Tee-Object -Variable Message |
-		Out-String |
-			Write-Verbose
-
-$Message | Invoke-Git -Command 'commit' -All:$All.IsPresent
