@@ -90,11 +90,71 @@ Describe -Name 'Git Message Test Suite' -Tag 'Test Suite' {
         }
 
         Context -'Header -le 50 characters long' {
-            It -Name 'Should be less than or equal to 50 characters' -Tag 'Unit Test' {
+            It -Name 'Bug template should be less than or equal to 50 characters' -Tag 'Unit Test' {
                 # Arrange
 
                 # Act
                 $header = Write-Header -Type 'bug' -Id '1234' -Scope 'local' -Title 'Fixing a bug'
+
+                # Assert
+                $header.Length | Should -BeLessOrEqual 50
+            }
+
+            It -Name 'Epic template should be less than or equal to 50 characters' -Tag 'Unit Test' {
+                # Arrange
+
+                # Act
+                $header = Write-Header -Type 'epic' -Id '1234' -Scope 'local' -Title 'Creating an epic'
+
+                # Assert
+                $header.Length | Should -BeLessOrEqual 50
+            }
+
+            It -Name 'Feature template should be less than or equal to 50 characters' -Tag 'Unit Test' {
+                # Arrange
+
+                # Act
+                $header = Write-Header -Type 'feature' -Id '1234' -Scope 'local' -Title 'Adding a feature'
+
+                # Assert
+                $header.Length | Should -BeLessOrEqual 50
+            }
+
+            It -Name 'Issue template should be less than or equal to 50 characters' -Tag 'Unit Test' {
+                # Arrange
+
+                # Act
+                $header = Write-Header -Type 'issue' -Id '1234' -Scope 'local' -Title 'Resolving an epic'
+
+                # Assert
+                $header.Length | Should -BeLessOrEqual 50
+            }
+
+            It -Name 'Task template should be less than or equal to 50 characters' -Tag 'Unit Test' {
+                # Arrange
+
+                # Act
+                $header = Write-Header -Type 'task' -Id '1234' -Scope 'local' -Title 'Completing a task'
+
+                # Assert
+                $header.Length | Should -BeLessOrEqual 50
+            }
+
+            It -Name 'Test Case template should be less than or equal to 50 characters' -Tag 'Unit Test' {
+                # Arrange
+
+                # Act
+                $header = Write-Header -Type 'test case' -Id '1234' -Scope 'local' -Title 'Testing a test case'
+
+                # Assert
+                $header.Length | Should -BeLessOrEqual 50
+            }
+
+            It -Name 'User Story template should be less than or equal to 50 characters' -Tag 'Unit Test' {
+                # Arrange
+
+                # Act
+                $header = Write-Header -Type 'user story' -Id '1234' -Scope 'local' -Title 'Writing a user story'
 
                 # Assert
                 $header.Length | Should -BeLessOrEqual 50
