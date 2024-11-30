@@ -302,6 +302,32 @@ Describe -Name 'Git Message Test Suite' -Tag 'Test Suite' {
                 Test-Path @testPathSplat | Should -Not -BeNullOrEmpty
             }
         }
+
+        Context -Name 'Why and What' {
+            It -Name 'Should Write a Body' -Tag 'Unit Test' {
+                # Arrange
+                $expected = @('Because I said so.', 'With PowerShell.')
+
+                # Act
+                $actual = Write-Body -Why 'Because I said so.' -What 'With PowerShell.'
+
+                # Assert
+                $actual | Should -BeExactly $expected
+            }
+        }
+
+        Context -Name 'Why, What, and How' {
+            It -Name 'Should Write a Body' -Tag 'Unit Test' {
+                # Arrange
+                $expected = @('Because I said so.', 'Write a body.', 'With PowerShell.')
+
+                # Act
+                $actual = Write-Body -Why 'Because I said so.' -What 'Write a body.' -How 'With PowerShell.'
+
+                # Assert
+                $actual | Should -BeExactly $expected
+            }
+        }
     }
 
     Describe -Name 'Function Write-Footer' -Tag 'Unit Tests' {

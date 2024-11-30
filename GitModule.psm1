@@ -61,6 +61,7 @@ function Invoke-GitCommit {
 #>
 function Write-Body {
 	[CmdletBinding()]
+	[OutputType([string[]])]
 	param (
 		[Parameter(Mandatory)]
 		[ValidateNotNullOrEmpty()]
@@ -72,7 +73,6 @@ function Write-Body {
 		[string]
 		$What,
 
-		[Parameter(Mandatory)]
 		[ValidateNotNullOrEmpty()]
 		[string]
 		$How
@@ -80,7 +80,10 @@ function Write-Body {
 
 	$Why | Write-Output
 	$What | Write-Output
-	$How | Write-Output
+
+	if ($PSBoundParameters.ContainsKey('How')) {
+		$How | Write-Output
+	}
 
 	<#
 		.SYNOPSIS
@@ -103,6 +106,12 @@ function Write-Body {
 
 		.OUTPUTS
 		System.String.  `Write-Body` returns a string.
+
+		.EXAMPLE
+		PS> Write-Body -Why 'Fix a bug' -What 'Bug was causing a crash'
+
+		Fix a bug
+		Bug was causing a crash
 
 		.EXAMPLE
 		PS> Write-Body -Why 'Fix a bug' -What 'Bug was causing a crash' -How 'Fixed a bug in the code'
