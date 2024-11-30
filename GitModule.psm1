@@ -14,6 +14,9 @@ function Invoke-GitCommit {
 	)
 
 	BEGIN {
+		Set-StrictMode -Version 3.0
+		Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
 		if ($All.IsPresent) {
 			$option = '--all'
 		}
@@ -30,19 +33,24 @@ function Invoke-GitCommit {
 			$option += ' '
 			$option = '--quiet'
 		}
+
+		if ($PSBoundParameters.ContainsKey('WhatIf') -and $WhatIfPreference) {
+			$option += ' '
+			$option += '--dry-run'
+		}
 	}
 
 	PROCESS {
-		$CommandLine = ('git commit "{0}" {1}' -f $Command, $Message, $option)
+		$CommandLine = ('git commit "{0}" {1}' -f $Message, $option)
 
-		if ($PSCmdlet.ShouldProcess($CommandLine, $Command)) {
+		if ($PSCmdlet.ShouldProcess($CommandLine, $CmdletName)) {
 			& $CommandLine
 
 			if ($LASTEXITCODE -ne 0) {
-				Write-Warning -Message "git $Command did not appear to exit successfully:  $LASTEXITCODE"
+				Write-Warning -Message "git commit did not appear to exit successfully:  $LASTEXITCODE"
 			}
 			else {
-				Write-Verbose -Message "git $Command appears to have exited successfully"
+				Write-Verbose -Message "git commit appears to have exited successfully"
 			}
 		}
 	}

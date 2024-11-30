@@ -1,9 +1,13 @@
 BeforeAll {
-    $BaseName = Get-Item -LiteralPath $PSCommandPath | Select-Object -ExpandProperty BaseName
-    $BaseName = $BaseName -replace '\.tests$'
+    # Arrange
+    $BaseName        = Get-Item -LiteralPath $PSCommandPath | Select-Object -ExpandProperty BaseName
+    $BaseName        = $BaseName -replace '\.tests$'
     $ModuleUnderTest = Join-Path -Path $PSScriptRoot -ChildPath "$BaseName.psd1" -Resolve
+    
+    # Act
     Import-Module -Name $ModuleUnderTest -Verbose
 
+    # Mock for Invoke-GitCommit
     function Invoke-GitCommit {
         param (
             [Parameter(Mandatory, ValueFromPipeline)]
@@ -21,10 +25,17 @@ BeforeAll {
             Write-Host -Object "Interactive -> $Message"
         }
     }
+
+    # Assert
+    Get-Module -Name $BaseName | Should -Not -BeNullOrEmpty
 }
 
 AfterAll {
+    # Act
     Get-Module -ListAvailable | Where-Object -Property Name -EQ $ModuleUnderTest | Remove-Module -Verbose
+
+    # Assert
+    Get-Module -ListAvailable | Where-Object -Property Name -EQ $ModuleUnderTest | Should -BeNullOrEmpty
 }
 
 Describe -Name 'Git Message Test Suite' -Tag 'Test Suite' {
