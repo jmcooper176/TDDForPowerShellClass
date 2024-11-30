@@ -270,6 +270,11 @@ function Write-Header {
 	Set-StrictMode -Version 3.0
 	Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
+	if ($Title -match '.*\.$') {
+		Write-Warning -Message "$($CmdletName) : Title must not end in a period.  Removing."
+		$Title = $Title -replace '\.$'
+	}
+
 	if ($Scope -eq 'local') {
 		$value = ('{0} #{1} (local):  {2}' -f $Type, $Id, $Title)
 	}
