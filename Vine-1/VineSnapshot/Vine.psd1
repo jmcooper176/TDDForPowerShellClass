@@ -104,7 +104,7 @@ PrivateData = @{
         ProjectUri = 'https://github.com/jmcooper176/TDDForPowerShellClass'
 
         # A URL to an icon representing this module.
-        # IconUri = ''
+        IconUri = 'https://github.com/jmcooper176/TDDForPowerShellClass/vine.ico'
 
         # ReleaseNotes of this module
         # ReleaseNotes = ''
