@@ -1,4 +1,4 @@
-using module ..\Vine\Vine.psd1
+using namespace System
 
 <#
     class Vine
@@ -31,12 +31,6 @@ class Vine: System.IDisposable
     {
         $this.Type = $Value.GetType()
         $this.Value = $Value -as $this.Type
-    }
-
-    Vine($Type)
-    {
-        $this.Type = $Type
-        $this.Value = $null
     }
 
     Vine($Value, $Type)

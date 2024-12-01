@@ -1,4 +1,4 @@
-using module ..\Vine\Vine.psd1
+using namespace System
 
 <#
     class Vine
@@ -31,12 +31,6 @@ class Vine: System.IDisposable
     {
         $this.Type = $Value.GetType()
         $this.Value = $Value -as $this.Type
-    }
-
-    Vine($Type)
-    {
-        $this.Type = $Type
-        $this.Value = $null
     }
 
     Vine($Value, $Type)
@@ -91,35 +85,29 @@ function New-Vine {
     Set-StrictMode -Version 3.0
     Set-Variable -Name 'CmdletName' -Option ReadOnly -Value $PSCmdlet.MyInvocation.MyCommand.Name -WhatIf:$false
 
-    if ($PSBoundParameters.ContainsKey('Value') -and $PSBoundParameters.ContainsKey('Type')) {
+    if ($PSBoundParameters.ContainsKey('Value')) {
         if ($null -ne $Value) {
             $target = "Using Value '$($Value)' and Type '$($Type.Name)'"
         } else {
             $target = "Using Value <null> and Type '$($Type.Name)'"
         }
-
-        if ($PSCmdlet.ShouldProcess($target, $CmdletName)) {
-            $instance = [Vine]::new($Value, $Type)
-            $instance | Write-Output
-        }
-    } elseif ($PSBoundParameters.ContainsKey('Value')) {
-        if ($null -ne $Value) {
-            $target = "Using Value '$($Value)' and Type 'Object'"
-        } else {
-            $target = "Using Value <null> and Type 'Object'"
-        }
-
-        if ($PSCmdlet.ShouldProcess($target, $CmdletName)) {
-            $instance = [Vine]::new($Value)
-            $instance | Write-Output
-        }
     } else {
-        $target = "Using Value <null> and Type 'Object'"
+        $target = "Using Value <null> and Type '$($Type.Name)'"
+    }
 
-        if ($PSCmdlet.ShouldProcess($target, $CmdletName)) {
-            $instance = [Vine]::new()
-            $instance | Write-Output
+    if ($PSCmdlet.ShouldProcess($target, $CmdletName)) {
+        $instance = [Vine]::new()
+
+        $instance.Type = $Type
+
+        if ($PSBoundParameters.ContainsKey('Value')) {
+            $instance.Value = $Value -as $instance.Type
         }
+
+        $instance | Write-Output
+    } else {
+        Write-Warning -Message "$($CmdletName) : WhatIf Passed : $target"
+        $null | Write-Output
     }
 
     <#

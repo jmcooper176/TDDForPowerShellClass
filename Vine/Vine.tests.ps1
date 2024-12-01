@@ -1,4 +1,4 @@
-using module ..\Vine\Vine.psd1
+using module .\Vine.psm1
 
 <#
     Vine Pester Tests Based on the Pester Framework and STL Any Class
@@ -8,7 +8,7 @@ using module ..\Vine\Vine.psd1
 
 BeforeAll {
     # Arrange
-    $ModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\Vine\Vine.psd1' -Resolve
+    $ModulePath = Join-Path -Path $PSScriptRoot -ChildPath '.\Vine.psd1' -Resolve
     $HelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\HelperModule\HelperModule.psd1' -Resolve
 
     Set-Variable -Name TheAnswer -Option Constant -Value 42
@@ -40,8 +40,8 @@ BeforeAll {
     )
 
     # Act
-    Import-Module -Name $ModulePath -Verbose
-    Import-Module -Name $HelperModulePath -Verbose
+    Import-Module -Name $ModulePath -Verbose -Force
+    Import-Module -Name $HelperModulePath -Verbose -Force
 
     # Assert
     Get-Module -Name 'Vine' | Should -Not -BeNullOrEmpty
