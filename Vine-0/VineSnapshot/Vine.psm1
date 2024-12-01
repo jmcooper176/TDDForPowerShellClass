@@ -3,21 +3,28 @@ using namespace System
 <#
     class Vine
 #>
-class Vine: System.IDisposable
+class Vine : System.IDisposable
 {
     <#
         Public Properties
     #>
 
     <#
-        Private Properties
+        Hidden Public Properties
     #>
-    hidden [bool]$Disposed = $false
+    hidden [bool]$Disposed
 
     <#
         Constructors
     #>
-    Vine() { }
+    Vine() {
+        $this.Initialize(@{})
+    }
+
+    # Hidden Public method to share code between constructors
+    hidden [void]Initialize([hashtable]$properties) {
+        $this.Disposed = $false
+    }
 
     <#
         Public Methods
@@ -26,7 +33,7 @@ class Vine: System.IDisposable
         $this.Dispose($true)
     }
 
-    # override from here
+    # override only this Dispose() method
     [void]Dispose([bool]$disposing) {
         if ($disposing -and -not $this.Disposed) {
             $this.Disposed = $true
@@ -44,48 +51,13 @@ class Vine: System.IDisposable
 function New-Vine {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([Vine])]
-    param (
-        [AllowNull()]
-        [object]
-        $Value = $null,
-
-        [ValidateNotNull()]
-        [type]
-        $Type = [object]
-    )
+    param ()
 
     Set-StrictMode -Version 3.0
     Set-Variable -Name 'CmdletName' -Option ReadOnly -Value $PSCmdlet.MyInvocation.MyCommand.Name -WhatIf:$false
 
-    if ($PSBoundParameters.ContainsKey('Value') -and $PSBoundParameters.ContainsKey('Type')) {
-        if ($null -ne $Value) {
-            $target = "Using Value '$($Value)' and Type '$($Type.Name)'"
-        } else {
-            $target = "Using Value <null> and Type '$($Type.Name)'"
-        }
-    } elseif ($PSBoundParameters.ContainsKey('Value')) {
-        if ($null -ne $Value) {
-            $target = "Using Value '$($Value)' and Type 'Object'"
-        } else {
-            $target = "Using Value <null> and Type 'Object'"
-        }
-    } else {
-        $target = "Using Value <null> and Type 'Object'"
-    }
-
-    if ($PSCmdlet.ShouldProcess($target, $CmdletName)) {
-        $instance = [Vine]::new()
-
-        $instance.Type = $Type
-        
-        if ($PSBoundParameters.ContainsKey('Value')) {
-            $instance.Value = $Value -as $instance.Type
-        }
-
-        $instance | Write-Output
-    } else {
-        Write-Warning -Message "$($CmdletName) : WhatIf Passed : $target"
-        $null | Write-Output
+    if ($PSCmdlet.ShouldProcess('Default Constructor', $CmdletName)) {
+        [Vine]::new() | Write-Output
     }
 
     <#
@@ -95,12 +67,6 @@ function New-Vine {
         .DESCRIPTION
         `New-Vine` Creates a new instance of the Vine class.
 
-        .PARAMETER Value
-        Specifies the value to use for the new instance.  May be null.
-
-        .PARAMETER Type
-        Specifies the type to use for the new instance.  Defaults to [object].
-
         .INPUTS
         None.  You cannot pipe objects to `New-Vine`.
 
@@ -108,9 +74,9 @@ function New-Vine {
         [Vine].  A new instance of the Vine class.
 
         .EXAMPLE
-        PS C: \> New-Vine -Value 'Hello, World!' -Type [string]
+        PS C: \> New-Vine
         
-        Creates a new instance of the Vine class with the value 'Hello, World!' and the type [string].
+        Creates a new instance of the Vine class.
 
         .NOTES
         Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
@@ -131,8 +97,5 @@ function New-Vine {
 
         .LINK
         Write-Output
-
-        .LINK
-        Write-Warning
     #>
 }

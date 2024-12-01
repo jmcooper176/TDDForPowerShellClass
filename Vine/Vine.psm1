@@ -3,7 +3,7 @@ using namespace System
 <#
     class Vine
 #>
-class Vine: System.IDisposable
+class Vine : System.IDisposable
 {
     <#
         Public Properties
@@ -16,27 +16,61 @@ class Vine: System.IDisposable
     <#
         Private Properties
     #>
-    hidden [bool]$Disposed = $false
+    hidden [bool]$Disposed
 
     <#
         Constructors
     #>
     Vine()
     {
-        $this.Type = [object] -as [Type]
-        $this.Value = $null
+        $constructorHashTable = @{
+            Type = [object]
+            Value = $null
+        }
+
+        $this.Initialize($constructorHashTable)
     }
 
-    Vine($Value)
+    Vine([Type]$Value)
     {
-        $this.Type = $Value.GetType()
-        $this.Value = $Value -as $this.Type
+        $constructorHashTable = @{
+            Type = $Value.GetType()
+            Value = $Value
+        }
+        
+        $this.Initialize($constructorHashTable)
     }
 
-    Vine($Value, $Type)
+    Vine([object]$Value, [Type]$Type)
     {
-        $this.Type = $Type
-        $this.Value = $Value -as $this.Type
+        $constructorHashTable = @{
+            Type = $Type
+            Value = $Value
+        }
+
+        $this.Initialize($constructorHashTable)
+    }
+
+    Vine([hashtable]$properties)
+    {
+        $this.Initialize($properties)
+    }
+
+    # Hidden Public method to share code between constructors
+    hidden [void]Initialize([hashtable]$properties)
+    {
+        $this.Disposed = $false
+
+        if (-not $properties.ContainsKey('Type')) {
+            $properties.Add('Type', [object])
+        }
+
+        if (-not $properties.ContainsKey('Value')) {
+            $properties.Add('Value', $null)
+        }
+
+        $this.Type     = $properties['Type']
+        $this.Value    = $properties['Value']
     }
 
     <#
@@ -48,9 +82,15 @@ class Vine: System.IDisposable
 
     # override from here
     [void]Dispose([bool]$disposing) {
-        if ($disposing -and -not $this.Disposed) {
-            $this.Value = $null
-            $this.Type = [object] -as [Type]
+        if (-not $this.Disposed) {
+            if ($disposing) {
+                # managed cleanup here
+                $this.Value = $null
+                $this.Type = [object]
+            }
+
+            # unmanaged cleanup here
+
             $this.Disposed = $true
         }
     }
@@ -60,9 +100,17 @@ class Vine: System.IDisposable
     #>
     static [void]Swap([Vine]$First, [Vine]$Second)
     {
-        $temp = $First.Value
-        $First.Emplace($Second.Value)
-        $Second.Emplace($temp)
+        $swapper = [Vine]::new($First.Value, $First.Type)
+
+        try {
+            $First.Emplace($Second.Value)
+            $First.Type = $Second.Type
+            $Second.Emplace($swapper.Value)
+            $Second.Type = $swapper.Type
+        }
+        finally {
+            $swapper.Dispose()
+        }
     }
 }
 
@@ -85,29 +133,20 @@ function New-Vine {
     Set-StrictMode -Version 3.0
     Set-Variable -Name 'CmdletName' -Option ReadOnly -Value $PSCmdlet.MyInvocation.MyCommand.Name -WhatIf:$false
 
-    if ($PSBoundParameters.ContainsKey('Value')) {
-        if ($null -ne $Value) {
-            $target = "Using Value '$($Value)' and Type '$($Type.Name)'"
-        } else {
-            $target = "Using Value <null> and Type '$($Type.Name)'"
+    if (($null -ne $Value) -or ($Type -ne [object])) {
+        if ($PSCmdlet.ShouldProcess('Value and Type Constructor', $CmdletName)) {
+            [Vine]::new($Value, $Type) | Write-Output
         }
-    } else {
-        $target = "Using Value <null> and Type '$($Type.Name)'"
     }
-
-    if ($PSCmdlet.ShouldProcess($target, $CmdletName)) {
-        $instance = [Vine]::new()
-
-        $instance.Type = $Type
-
-        if ($PSBoundParameters.ContainsKey('Value')) {
-            $instance.Value = $Value -as $instance.Type
+    elseif ($null -ne $Value) {
+        if ($PSCmdlet.ShouldProcess('Value Constructor', $CmdletName)) {
+            [Vine]::new($Value) | Write-Output
         }
-
-        $instance | Write-Output
-    } else {
-        Write-Warning -Message "$($CmdletName) : WhatIf Passed : $target"
-        $null | Write-Output
+    }
+    else {
+        if ($PSCmdlet.ShouldProcess('Default Constructor', $CmdletName)) {
+            [Vine]::new() | Write-Output
+        }
     }
 
     <#
