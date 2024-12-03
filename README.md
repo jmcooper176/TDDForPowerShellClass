@@ -1,15 +1,103 @@
 # Source for the Book "Test Driven Design for PowerShell Classes"
 
+By John Merryweather Cooper
+
+Snapshots of source:
+
 ## Vine-0
 
 Initial Red-Green Unit Tests setting the design.
 
+* the constructors
+
+  * Vine()
+  * New-Vine
+  * New-Object -TypeName 'Vine'
+
+* the method
+  * [void]Dispose()
+
 ## Vine-1
 
-Refinements to: 
+Refinements to:
 
 * the constructors
+
+  * Vine()
+  * Vine([object])
+  * Vine([object], [Type])
+  * New-Vine -Value [object] -Type [type]
+    * Output type [Vine]
+  * New-Object -TypeName 'Vine' -ArgumentList [object], [type]
+    * Output type [Vine]
+
 * the public properties
-* some of the methods
+
+  * [string]FullName property
+  * [string]Name property
+  * [string]Namespace property
+  * [type]Type property
+  * [object]Value property
+
+* the public, hidden property
+  * [bool]Diposed hidden property
+
+* the public method
+  * [void]Dispose() method
 
 ## Vine-2
+
+Refinements to:
+
+* static [void]Swap([Vine], [Vine]) method
+
+## Vine-3
+
+Refinements to:
+
+* Equals([Vine]) method
+* static Equals([Vine], [Vine]) method
+* GetHashCode() method
+* NotEquals([Vine]) method
+* static NotEquals([Vine], [Vine]) method
+
+## Vine-4
+
+Refinement to:
+
+* Emplace([object]) method
+* Emplace([object], [Type])
+* Emplace([Vine])
+
+## Vine-5
+
+Refinement to:
+
+* [object]Cast([Type]) method
+
+## Vine-6
+
+Refinement to:
+
+* [bool]HasValue() method
+
+## Vine-7
+
+Refinement to:
+
+* [type]AsType()
+* [string]ToString()
+
+## Vine-8
+
+Refinement to: 
+
+* static [type]BaseType([Vine])
+* static [type]DeclaringType([Vine])
+* static [bool]HasElementType([Vine])
+* static [bool]IsArray([Vine])
+* static [bool]IsAssignableTo([Vine])
+* static [bool]IsClass([Vine])
+* static [bool]IsInstanceOfType([Vine])
+* static [bool]IsSubclassOf([Vine])
+* static [bool]IsValueType([Vine])

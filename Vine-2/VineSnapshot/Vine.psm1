@@ -59,16 +59,15 @@ class Vine : System.IDisposable
     # Hidden Public method to share code between constructors
     hidden [void]Initialize([hashtable]$properties)
     {
-        $this.Disposed = $false
-
         if (-not $properties.ContainsKey('Type')) {
-            $properties.Add('Type', [object])
+            $properties.Add('Type', [type][object])
         }
 
         if (-not $properties.ContainsKey('Value')) {
             $properties.Add('Value', $null)
         }
 
+        $this.Disposed = $false
         $this.Type     = $properties['Type']
         $this.Value    = $properties['Value']
     }
@@ -100,17 +99,10 @@ class Vine : System.IDisposable
     #>
     static [void]Swap([Vine]$First, [Vine]$Second)
     {
-        $swapper = [Vine]::new($First.Value, $First.Type)
+        $swapValue = $First.Value
 
-        try {
-            $First.Emplace($Second.Value)
-            $First.Type = $Second.Type
-            $Second.Emplace($swapper.Value)
-            $Second.Type = $swapper.Type
-        }
-        finally {
-            $swapper.Dispose()
-        }
+        $First.Emplace($Second.Value)
+        $Second.Emplace($swapValue)
     }
 }
 
