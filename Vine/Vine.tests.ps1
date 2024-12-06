@@ -39,6 +39,36 @@ BeforeAll {
         [PSCustomObject]@{Name = 'StringUnlucky'; Value = [string]$UnluckyNumber; Type = [string].AsType();}
     )
 
+    $MethodList = @(
+        'AsType',
+        'BaseType',
+        'Cast',
+        'Clear',
+        'Dispose',
+        'Emplace',
+        'Equals',
+        'GetHashCode',
+        'HasElementType',
+        'HasValue',
+        'IsArray',
+        'IsClass',
+        'IsInstanceOfType',
+        'IsAssignableTo',
+        'IsSubclassOf',
+        'IsValueType',
+        'NotEquals',
+        'Swap',
+        'ToString'
+    )
+
+    $PropertyList = @(
+        'FullName',
+        'Name',
+        'Namespace',
+        'Type',
+        'Value'
+    )
+
     # Act
     Import-Module -Name $ModulePath -Verbose -Force
     Import-Module -Name $HelperModulePath -Verbose -Force
@@ -124,108 +154,30 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
                 $vine.GetType() | Should -BeOfType 'Vine'
             }
 
-            It -Name 'Construct Vine with property FullName' -Tag 'Unit Test' {
+            It -Name 'Construct Vine has properties' -Tag 'Unit Test' {
                 # Arrange
                 $vine = New-Vine
 
-                # Act and Assert
-                Test-HasProperty -Object $vine -Name 'FullName' | Should -BeTrue
+                $PropertyList | ForEach-Object -Process {
+                    # Act
+                    Write-Verbose -Message "Testing property $_"
+
+                    # Assert
+                    $_ | Test-HasProperty -Object $vine | Should -BeTrue
+                }
             }
 
-            It -Name 'Construct Vine with property Name' -Tag 'Unit Test' {
+            It -Name 'Construct Vine has methods' -Tag 'Unit Test' {
                 # Arrange
                 $vine = New-Vine
 
-                # Act and Assert
-                Test-HasProperty -Object $vine -Name 'Name' | Should -BeTrue
-            }
+                $PropertyList | ForEach-Object -Process {
+                    # Act
+                    Write-Verbose -Message "Testing method $_"
 
-            It -Name "Construct Vine with property Name equals 'Vine'" -Tag 'Unit Test' {
-                # Arrange,
-                $vine = New-Vine
-
-                # Assert
-                $vine.Name | Should -Be 'Vine'
-            }
-
-            It -Name "Construct Vine with property FullName equals 'Vine'" -Tag 'Unit Test' {
-                # Arrange,
-                $vine = New-Vine
-
-                # Assert
-                $vine.FullName | Should -Be 'Vine'
-            }
-
-            It -Name 'Construct Vine with property Type' -Tag 'Unit Test' {
-                # Arrange
-                $vine = New-Vine
-
-                # Assert
-                Test-HasProperty -Object $vine -Name 'Type' | Should -BeTrue
-            }
-
-            It -Name 'Construct Vine with property Value' -Tag 'Unit Test' {
-                # Arrange, Act, and Assert
-                $vine = New-Vine
-
-                # Assert
-                Test-HasProperty -Object $vine -Name 'Value' | Should -BeTrue
-            }
-
-            It -Name 'Construct Vine with method Clear' -Tag 'Unit Test' {
-                # Arrange, Act, and Assert
-                $vine = New-Vine
-
-                # Assert
-                Test-HasMethod -Object $vine -Name 'Clear' | Should -BeTrue
-            }
-
-            It -Name 'Construct Vine with method Dispose' -Tag 'Unit Test' {
-                # Arrange, Act, and Assert
-                $vine = New-Vine
-
-                # Assert
-                Test-HasMethod -Object $vine -Name 'Dispose' | Should -BeTrue
-            }
-
-            It -Name 'Construct Vine with method Emplace' -Tag 'Unit Test' {
-                # Arrange, Act, and Assert
-                $vine = New-Vine
-
-                # Assert
-                Test-HasMethod -Object $vine -Name 'Emplace' | Should -BeTrue
-            }
-
-            It -Name 'Construct Vine with method GetValue' -Tag 'Unit Test' {
-                # Arrange, Act, and Assert
-                $vine = New-Vine
-
-                # Assert
-                Test-HasMethod -Object $vine -Name 'GetValue' | Should -BeTrue
-            }
-
-            It -Name 'Construct Vine with method HasValue' -Tag 'Unit Test' {
-                # Arrange, Act, and Assert
-                $vine = New-Vine
-
-                # Assert
-                Test-HasMethod -Object $vine -Name 'HasValue' | Should -BeTrue
-            }
-
-            It -Name 'Construct Vine with method OfType' -Tag 'Unit Test' {
-                # Arrange, Act, and Assert
-                $vine = New-Vine
-
-                # Assert
-                Test-HasMethod -Object $vine -Name 'OfType' | Should -BeTrue
-            }
-
-            It -Name 'Construct Vine with method Swap' -Tag 'Unit Test' {
-                # Arrange, Act, and Assert
-                $vine = New-Vine
-
-                # Assert
-                Test-HasMethod -Object $vine -Name 'Swap' | Should -BeTrue
+                    # Assert
+                    $_ | Test-HasMethod -Object $vine | Should -BeTrue
+                }
             }
 
             It -Name 'Construct Vine with a value' -Tag 'Unit Test' {
@@ -234,19 +186,24 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
             }
 
             It -Name 'Construct Vine with a value and vine should not be null or empty' -Tag 'Unit Test' {
-                # Arrange, Act, and Assert
+                # Arrange and Act
                 $vine = New-Vine -Value $TheAnswer
 
                 # Assert
                 $vine | Should -Not -BeNullOrEmpty
             }
 
-            It -Name 'Construct Vine with a value and vine should have Property Value' -Tag 'Unit Test' {
+            It -Name 'Construct Vine with a value and vine should have properties' -Tag 'Unit Test' {
                 # Arrange, Act, and Assert
                 $vine = New-Vine -Value $TheAnswer
 
-                # Assert
-                Test-HasProperty -Object $vine -Name 'Value' | Should -BeTrue
+                $PropertyList | ForEach-Object -Process {
+                    # Act
+                    Write-Verbose -Message "Testing property $_"
+
+                    # Assert
+                    $_ | Test-HasProperty -Object $vine | Should -BeTrue
+                }
             }
 
             It -Name 'Construct Vine with a value and vine should have Property Value with value TheAnswer' -Tag 'Unit Test' {
@@ -308,20 +265,17 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
                 $type.Name | Should -Be 'Vine'
             }
 
-            It -Name 'Construct Vine with a value and a type and vine should have property Value' -Tag 'Unit Test' {
+            It -Name 'Construct Vine with a value and a type and vine should have properties' -Tag 'Unit Test' {
                 # Arrange, Act, and Assert
                 $vine = New-Vine -Value $TheAnswer -Type ([type][Int32])
 
-                # Assert
-                Test-HasProperty -Object $vine -Name 'Value' | Should -BeTrue
-            }
+                $PropertyList | ForEach-Object -Process {
+                    # Act
+                    Write-Verbose -Message "Testing property $_"
 
-            It -Name 'Construct Vine with a value and a type and vine should have property Type' -Tag 'Unit Test' {
-                # Arrange, Act, and Assert
-                $vine = New-Vine -Value $TheAnswer -Type ([type][Int32])
-
-                # Assert
-                Test-HasProperty -Object $vine -Name 'Type' | Should -BeTrue
+                    # Assert
+                    $_ | Test-HasProperty -Object $vine | Should -BeTrue
+                }
             }
 
             It -Name 'Construct Vine with a value and a type and vine.Value equals value' -Tag 'Unit Test' {
@@ -399,20 +353,17 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
                 $vine.GetType() | Should -BeOfType 'Vine'
             }
 
-            It -Name 'Construct Vine with property FullName' -Tag 'Unit Test' {
+            It -Name 'Construct Vine has properties' -Tag 'Unit Test' {
                 # Arrange
                 $vine = New-Object -TypeName 'Vine'
 
-                # Act and Assert
-                Test-HasProperty -Object $vine -Name 'FullName' | Should -BeTrue
-            }
+                $PropertyList | ForEach-Object -Process {
+                    # Act
+                    Write-Verbose -Message "Testing property $_"
 
-            It -Name 'Construct Vine with property Name' -Tag 'Unit Test' {
-                # Arrange
-                $vine = New-Object -TypeName 'Vine'
-
-                # Act and Assert
-                Test-HasProperty -Object $vine -Name 'Name' | Should -BeTrue
+                    # Assert
+                    $_ | Test-HasProperty -Object $vine | Should -BeTrue
+                }
             }
 
             It -Name "Construct Vine with property Name equals 'Vine'" -Tag 'Unit Test' {
@@ -431,76 +382,17 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
                 $vine.FullName | Should -Be 'Vine'
             }
 
-            It -Name 'Construct Vine with property Type' -Tag 'Unit Test' {
-                # Arrange
-                $vine = New-Object -TypeName 'Vine'
-
-                # Assert
-                Test-HasProperty -Object $vine -Name 'Type' | Should -BeTrue
-            }
-
-            It -Name 'Construct Vine with property Value' -Tag 'Unit Test' {
+            It -Name 'Construct Vine has methods' -Tag 'Unit Test' {
                 # Arrange, Act, and Assert
                 $vine = New-Object -TypeName 'Vine'
 
-                # Assert
-                Test-HasProperty -Object $vine -Name 'Value' | Should -BeTrue
-            }
+                $MethodList | ForEach-Object -Process {
+                    # Act
+                    Write-Verbose -Message "Testing method $_"
 
-            It -Name 'Construct Vine with method Clear' -Tag 'Unit Test' {
-                # Arrange, Act, and Assert
-                $vine = New-Object -TypeName 'Vine'
-
-                # Assert
-                Test-HasMethod -Object $vine -Name 'Clear' | Should -BeTrue
-            }
-
-            It -Name 'Construct Vine with method Dispose' -Tag 'Unit Test' {
-                # Arrange, Act, and Assert
-                $vine = New-Object -TypeName 'Vine'
-
-                # Assert
-                Test-HasMethod -Object $vine -Name 'Dispose' | Should -BeTrue
-            }
-
-            It -Name 'Construct Vine with method Emplace' -Tag 'Unit Test' {
-                # Arrange, Act, and Assert
-                $vine = New-Object -TypeName 'Vine'
-
-                # Assert
-                Test-HasMethod -Object $vine -Name 'Emplace' | Should -BeTrue
-            }
-
-            It -Name 'Construct Vine with method GetValue' -Tag 'Unit Test' {
-                # Arrange, Act, and Assert
-                $vine = New-Object -TypeName 'Vine'
-
-                # Assert
-                Test-HasMethod -Object $vine -Name 'GetValue' | Should -BeTrue
-            }
-
-            It -Name 'Construct Vine with method HasValue' -Tag 'Unit Test' {
-                # Arrange, Act, and Assert
-                $vine = New-Object -TypeName 'Vine'
-
-                # Assert
-                Test-HasMethod -Object $vine -Name 'HasValue' | Should -BeTrue
-            }
-
-            It -Name 'Construct Vine with method OfType' -Tag 'Unit Test' {
-                # Arrange, Act, and Assert
-                $vine = New-Object -TypeName 'Vine'
-
-                # Assert
-                Test-HasMethod -Object $vine -Name 'OfType' | Should -BeTrue
-            }
-
-            It -Name 'Construct Vine with method Swap' -Tag 'Unit Test' {
-                # Arrange, Act, and Assert
-                $vine = New-Object -TypeName 'Vine'
-
-                # Assert
-                Test-HasMethod -Object $vine -Name 'Swap' | Should -BeTrue
+                    # Assert
+                    $_ | Test-HasMethod -Object $vine | Should -BeTrue
+                }
             }
 
             It -Name 'Construct Vine with a value' -Tag 'Unit Test' {
@@ -516,12 +408,17 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
                 $vine | Should -Not -BeNullOrEmpty
             }
 
-            It -Name 'Construct Vine with a value and vine should have Property Value' -Tag 'Unit Test' {
+            It -Name 'Construct Vine with a value and vine should have properties' -Tag 'Unit Test' {
                 # Arrange, Act, and Assert
                 $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer
 
-                # Assert
-                Test-HasProperty -Object $vine -Name 'Value' | Should -BeTrue
+                $PropertyList | ForEach-Object -Process {
+                    # Act
+                    Write-Verbose -Message "Testing property $_"
+
+                    # Assert
+                    $_ | Test-HasProperty -Object $vine | Should -BeTrue
+                }
             }
 
             It -Name 'Construct Vine with a value and vine should have Property Value with value TheAnswer' -Tag 'Unit Test' {
@@ -541,14 +438,6 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
 
                 # Assert
                 $type.Name | Should -Be 'Vine'
-            }
-
-            It -Name 'Construct Vine with a value and vine should have property Value' -Tag 'Unit Test' {
-                # Arrange, Act, and Assert
-                $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer
-
-                # Assert
-                Test-HasProperty -Object $vine -Name 'Value' | Should -BeTrue
             }
 
             It -Name 'Construct Vine with a value and vine.Value should equal value' -Tag 'Unit Test' {
@@ -657,20 +546,17 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
             $vine.GetType() | Should -BeOfType 'Vine'
         }
 
-        It -Name 'Construct Vine with property FullName' -Tag 'Unit Test' {
+        It -Name 'Construct Vine has properties' -Tag 'Unit Test' {
             # Arrange
             $vine = [Vine]::new()
 
-            # Act and Assert
-            Test-HasProperty -Object $vine -Name 'FullName' | Should -BeTrue
-        }
+            $PropertyList | ForEach-Object -Process {
+                # Act
+                Write-Verbose -Message "Testing property $_"
 
-        It -Name 'Construct Vine with property Name' -Tag 'Unit Test' {
-            # Arrange
-            $vine = [Vine]::new()
-
-            # Act and Assert
-            Test-HasProperty -Object $vine -Name 'Name' | Should -BeTrue
+                # Assert
+                $_ | Test-HasProperty -Object $vine | Should -BeTrue
+            }
         }
 
         It -Name "Construct Vine with property Name equals 'Vine'" -Tag 'Unit Test' {
@@ -689,76 +575,17 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
             $vine.FullName | Should -Be 'Vine'
         }
 
-        It -Name 'Construct Vine with property Type' -Tag 'Unit Test' {
-            # Arrange
-            $vine = [Vine]::new()
-
-            # Assert
-            Test-HasProperty -Object $vine -Name 'Type' | Should -BeTrue
-        }
-
-        It -Name 'Construct Vine with property Value' -Tag 'Unit Test' {
+        It -Name 'Construct Vine has methods' -Tag 'Unit Test' {
             # Arrange, Act, and Assert
             $vine = [Vine]::new()
 
-            # Assert
-            Test-HasProperty -Object $vine -Name 'Value' | Should -BeTrue
-        }
+            $MethodList | ForEach-Object -Process {
+                # Act
+                Write-Verbose -Message "Testing method $_"
 
-        It -Name 'Construct Vine with method Clear' -Tag 'Unit Test' {
-            # Arrange, Act, and Assert
-            $vine = [Vine]::new()
-
-            # Assert
-            Test-HasMethod -Object $vine -Name 'Clear' | Should -BeTrue
-        }
-
-        It -Name 'Construct Vine with method Dispose' -Tag 'Unit Test' {
-            # Arrange, Act, and Assert
-            $vine = [Vine]::new()
-
-            # Assert
-            Test-HasMethod -Object $vine -Name 'Dispose' | Should -BeTrue
-        }
-
-        It -Name 'Construct Vine with method Emplace' -Tag 'Unit Test' {
-            # Arrange, Act, and Assert
-            $vine = [Vine]::new()
-
-            # Assert
-            Test-HasMethod -Object $vine -Name 'Emplace' | Should -BeTrue
-        }
-
-        It -Name 'Construct Vine with method GetValue' -Tag 'Unit Test' {
-            # Arrange, Act, and Assert
-            $vine = [Vine]::new()
-
-            # Assert
-            Test-HasMethod -Object $vine -Name 'GetValue' | Should -BeTrue
-        }
-
-        It -Name 'Construct Vine with method HasValue' -Tag 'Unit Test' {
-            # Arrange, Act, and Assert
-            $vine = [Vine]::new()
-
-            # Assert
-            Test-HasMethod -Object $vine -Name 'HasValue' | Should -BeTrue
-        }
-
-        It -Name 'Construct Vine with method OfType' -Tag 'Unit Test' {
-            # Arrange, Act, and Assert
-            $vine = [Vine]::new()
-
-            # Assert
-            Test-HasMethod -Object $vine -Name 'OfType' | Should -BeTrue
-        }
-
-        It -Name 'Construct Vine with method Swap' -Tag 'Unit Test' {
-            # Arrange, Act, and Assert
-            $vine = [Vine]::new()
-
-            # Assert
-            Test-HasMethod -Object $vine -Name 'Swap' | Should -BeTrue
+                # Assert
+                $_ | Test-HasMethod -Object $vine | Should -BeTrue
+            }
         }
 
         It -Name 'Construct Vine with a value' -Tag 'Unit Test' {
@@ -858,6 +685,72 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
         }
     }
 
+    Describe -Name 'Vine Method AsType' -Tag 'Method AsType Tests' {
+        Context -Name 'Exists' {
+            # Arrange
+            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, ([Int32].AsType())
+
+            # Act and Assert
+            Test-HasMethod -Object $vine -Name 'AsType' | Should -BeTrue
+        }
+
+        It -Name 'Construct Vine with a value and a type and AsType should return the type' -Tag 'Unit Test' {
+            # Arrange
+            $vine     = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
+            $expected = $vine.Type
+            
+            # Act
+            $actual = $vine.AsType()
+
+            # Act and Assert
+            $expected | Should -Be $actual
+        }
+    }
+
+    Describe -Name 'Vine static Method BaseType' -Tag 'Method BaseType Tests' {
+        Context -Name 'Exists' {
+            # Arrange
+            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, ([Int32].AsType())
+
+            # Act and Assert
+            Test-HasMethod -Object $vine -Name 'BaseType' | Should -BeTrue
+        }
+
+        It -Name 'Construct Vine with a value and a type and BaseType should return the type' -Tag 'Unit Test' {
+            # Arrange
+            $vine     = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
+            $expected = ($vine.Type).BaseType
+            
+            # Act
+            $actual = [Vine]::BaseType($vine)
+
+            # Act and Assert
+            $expected | Should -Be $actual
+        }
+    }
+
+    Describe -Name 'Vine Method Cast' -Tag 'Method Cast Tests' {
+        Context -Name 'Exists' {
+            # Arrange
+            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, ([Int32].AsType())
+
+            # Act and Assert
+            Test-HasMethod -Object $vine -Name 'Cast' | Should -BeTrue
+        }
+
+        It -Name 'Construct Vine with a value and a type and Cast should return the value' -Tag 'Unit Test' {
+            # Arrange
+            $vine     = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
+            $expected = [string]$vine.Value
+            
+            # Act
+            $actual = $vine.Cast([string].AsType())
+
+            # Act and Assert
+            $expected | Should -Be $actual
+        }
+    }
+
     Describe -Name 'Vine Method Clear' -Tag 'Method Clear Tests' {
         Context -Name 'Exists' {
             # Arrange
@@ -887,6 +780,38 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
 
             # Assert
             $vine.TypeIs() | Should -Be [Int32]
+        }
+    }
+
+    Describe -Name 'Vine Method Dispose' -Tag 'Method Dispose Tests' {
+        Context -Name 'Exists' {
+            # Arrange
+            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, ([Int32].AsType())
+
+            # Act and Assert
+            Test-HasMethod -Object $vine -Name 'Dispose' | Should -BeTrue
+        }
+
+        It -Name 'Construct Vine with a value and a type and dispose the vine' -Tag 'Integration Test' {
+            # Arrange
+            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
+
+            # Act
+            $vine.Dispose()
+
+            # Assert
+            $vine.HasValue() | Should -BeFalse
+        }
+
+        It -Name 'Construct Vine with a value and a type, dispose the vine, and type should be unchanged' -Tag 'Integration Test' {
+            # Arrange
+            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
+
+            # Act
+            $vine.Dispose()
+
+            # Assert
+            $vine.Type | Should -Be [Int32]
         }
     }
 
@@ -963,59 +888,25 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
         }
     }
 
-    Describe -Name 'Vine Method TypeIs' -Tag 'Method TypeIs Tests' {
+    Describe -Name 'Vine Method GetHashCode' -Tag 'Method GetHashCode Tests' {
         Context -Name 'Exists' {
             # Arrange
             $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
 
             # Act and Assert
-            Test-HasMethod -Object $vine -Name 'TypeIs' | Should -BeTrue
+            Test-HasMethod -Object $vine -Name 'GetHashCode' | Should -BeTrue
         }
 
-        It -Name 'Construct Vine with a value and a type and get the type' -Tag 'Unit Test' {
+        It -Name 'Construct Vine with a value and a type and get the hash code' -Tag 'Unit Test' {
             # Arrange
             $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
 
             # Act and Assert
-            $vine.TypeIs() | Should -Be [Int32]
+            $vine.GetHashCode() | Should -Be $TheAnswer.GetHashCode()
         }
     }
 
-    Describe -Name 'Vine Method GetValue' -Tag 'Method GetValue Tests' {
-        Context -Name 'Exists' {
-            # Arrange
-            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
-
-            # Act and Assert
-            Test-HasMethod -Object $vine -Name 'GetValue' | Should -BeTrue
-        }
-
-        It -Name 'Construct Vine with a value and a type and get the value' -Tag 'Unit Test' {
-            # Arrange
-            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
-
-            # Act and Assert
-            $vine.GetValue() | Should -Be $TheAnswer
-        }
-
-        It -Name 'Construct Vine with a value and a type and get the value' -Tag 'Unit Test' {
-            # Arrange
-            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
-
-            # Act and Assert
-            $vine.GetValue() | Should -Be $TheAnswer
-        }
-
-        It -Name 'Construct Vine with a value and a type and get the value as a different type' -Tag 'Unit Test' {
-            # Arrange
-            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
-
-            # Act and Assert
-            $vine.GetValue([string].AsType()) | Should -Be ($TestData | Where-Object -Property Name -EQ 'StringAnswer' | Select-Object -ExpandProperty Value -First 1)
-        }
-    }
-
-    Describe -Name 'Vine Method HasVelue' -Tag 'Method HasValue Tests' {
+    Describe -Name 'Vine Method HasValue' -Tag 'Method HasValue Tests' {
         Context -Name 'Exists' {
             # Arrange
             $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
@@ -1038,6 +929,126 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
 
             # Act and Assert
             $vine.HasValue() | Should -BeFalse
+        }
+    }
+
+    Describe -Name 'Vine static Method HasElementType' -Tag 'Method HasElementType Tests' {
+        Context -Name 'Exists' {
+            # Arrange
+            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
+
+            # Act and Assert
+            Test-HasMethod -Object $vine -Name 'HasElementType' | Should -BeTrue
+        }
+    }
+
+    Describe -Name 'View Method HasValue' -Tag 'Method HasValue Tests' {
+        Context -Name 'Exists' {
+            # Arrange
+            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
+
+            # Act and Assert
+            Test-HasMethod -Object $vine -Name 'HasValue' | Should -BeTrue
+        }
+    }
+
+    Describe -Name 'Vine static Method IsArray' -Tag 'Method IsArray Tests' {
+        Context -Name 'Exists' {
+            # Arrange
+            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
+
+            # Act and Assert
+            Test-HasMethod -Object $vine -Name 'IsArray' | Should -BeTrue
+        }
+    }
+
+    Describe -Name 'Vine static Method IsClass' -Tag 'Method IsClass Tests' {
+        Context -Name 'Exists' {
+            # Arrange
+            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
+
+            # Act and Assert
+            Test-HasMethod -Object $vine -Name 'IsClass' | Should -BeTrue
+        }
+    }
+
+    Describe -Name 'Vine static Method IsInstanceOfType' -Tag 'Method IsInstanceOfType Tests' {
+        Context -Name 'Exists' {
+            # Arrange
+            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
+
+            # Act and Assert
+            Test-HasMethod -Object $vine -Name 'IsInstanceOfType' | Should -BeTrue
+        }
+    }
+
+    Describe -Name 'Vine static Method IsAssignableTo' -Tag 'Method IsAssignableTo Tests' {
+        Context -Name 'Exists' {
+            # Arrange
+            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
+
+            # Act and Assert
+            Test-HasMethod -Object $vine -Name 'IsAssignableTo' | Should -BeTrue
+        }
+    }
+
+    Describe -Name 'Vine static Method IsSubclassOf' -Tag 'Method IsSubclassOf Tests' {
+        Context -Name 'Exists' {
+            # Arrange
+            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
+
+            # Act and Assert
+            Test-HasMethod -Object $vine -Name 'IsSubclassOf' | Should -BeTrue
+        }
+    }
+
+    Describe -Name 'Vine static Method IsValueType' -Tag 'Method IsValueType Tests' {
+        Context -Name 'Exists' {
+            # Arrange
+            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
+
+            # Act and Assert
+            Test-HasMethod -Object $vine -Name 'IsValueType' | Should -BeTrue
+        }
+    }
+    
+    Describe -Name 'Vine Method NotEquals' -Tag 'Method NotEquals Tests' {
+        Context -Name 'Exists' {
+            # Arrange
+            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
+
+            # Act and Assert
+            Test-HasMethod -Object $vine -Name 'NotEquals' | Should -BeTrue
+        }
+    }
+
+    Describe -Name 'Vine static Method NotEquals' -Tag 'Method NotEquals Tests' {
+        Context -Name 'Exists' {
+            # Arrange
+            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
+
+            # Act and Assert
+            Test-HasMethod -Object $vine -Name 'NotEquals' | Should -BeTrue
+        }
+    }
+
+    Describe -Name 'Vine static Method Swap' -Tag 'Method Swap Tests' {
+        Context -Name 'Exists' {
+            # Arrange
+            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
+
+            # Act and Assert
+            Test-HasMethod -Object $vine -Name 'Swap' | Should -BeTrue
+        }
+    }
+
+    Describe -Name 'Vine Method ToString' -Tag 'Method ToString Tests' {
+        Context -Name 'Exists' {
+            # Arrange
+            $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
+
+            # Act and Assert
+            Test-HasMethod -Object $vine -Name 'ToString' | Should -BeTrue
         }
     }
 }

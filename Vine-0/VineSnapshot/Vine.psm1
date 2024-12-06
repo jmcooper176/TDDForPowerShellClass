@@ -1,5 +1,3 @@
-using namespace System
-
 <#
     class Vine
 #>
@@ -35,7 +33,12 @@ class Vine : System.IDisposable
 
     # override only this Dispose() method
     [void]Dispose([bool]$disposing) {
-        if ($disposing -and -not $this.Disposed) {
+        if (-not $this.Disposed) {
+            if ($disposing) {
+                # Dispose managed resources
+            }
+
+            # Dispose unmanaged resources
             $this.Disposed = $true
         }
     }

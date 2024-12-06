@@ -12,7 +12,9 @@ Initial Red-Green Unit Tests setting the design.
 
   * Vine()
   * New-Vine
+    * Output type [Vine]
   * New-Object -TypeName 'Vine'
+    * Output type [Vine]
 
 * the method
   * [void]Dispose()
@@ -43,6 +45,7 @@ Refinements to:
   * [bool]Diposed hidden property
 
 * the public method
+  * [void]Clear() method
   * [void]Dispose() method
 
 ## Vine-2
@@ -65,9 +68,9 @@ Refinements to:
 
 Refinement to:
 
-* Emplace([object]) method
-* Emplace([object], [Type])
-* Emplace([Vine])
+* [void]Emplace([object]) method
+* [void]Emplace([object], [Type])
+* [void]Emplace([Vine])
 
 ## Vine-5
 

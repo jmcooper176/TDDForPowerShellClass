@@ -1,4 +1,203 @@
 <#
+    Select-ModuleByFilter
+#>
+function Select-ModuleByFilter {
+    [CmdletBinding()]
+    [OutputType([System.Management.Automation.PSModuleInfo])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
+        [SupportsWildcards()]
+        [string]
+        $Path,
+
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [scriptblock]
+        $FilterScript
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        $Path | Resolve-Path | Test-ModuleManifest | Where-Object -FilterScript $FilterScript | Write-Output
+    }
+
+    <#
+        .SYNOPSIS
+        Selects a module by a filter script.
+
+        .DESCRIPTION
+        The `Select-ModuleByFilter` function selects a module by a filter script.
+
+        .PARAMETER Path
+        Specifies the path to the module manifest file.
+
+        .PARAMETER FilterScript
+        Specifies the script block to use as the filter.
+
+        .INPUTS
+        [string]  `Select-ModuleByFilter` accepts a string value for the Path parameter from the PowerShell pipeline.
+
+        .OUTPUTS
+        [System.Management.Automation.PSModuleInfo]  `Select-ModuleByFilter` returns a module object to the PowerShell pipeline.
+
+        .EXAMPLE
+        PS> $Path = 'C:\Program Files\WindowsPowerShell\Modules\MyModule\MyModule.psd1'
+        PS> $FilterScript = { $_.PowerShellVersion -eq '5.1' }
+        PS> Select-ModuleByFilter -Path $Path -FilterScript $FilterScript
+        ModuleType Version    Name ExportedCommands
+        ---------- -------    ---- ----------------
+        Script    1.0.0      MyModule {}
+
+        Selected the module by the filter script.  Returned the module object.
+
+        .NOTES
+        Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
+
+        .LINK
+        about_Advanced_FUnctions
+    #>
+}
+
+<#
+    Select-ModuleByProperty
+#>
+function Select-ModuleByProperty {
+    [CmdletBinding()]
+    [OutputType([System.Management.Automation.PSModuleInfo])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
+        [SupportsWildcards()]
+        [string]
+        $Path,
+
+        [Parameter(Mandatory)]
+        [ValidateSet('Path', 'Description', 'PowerShellVersion', 'PowerShellHostName', 'PowerShellHostVersion', 'DotNetFrameworkVersion', 'ClrVersion', 'ProcessorArchitecture', 'RequiredModules', 'RequiredAssemblies', 'ScriptsToProcess', 'TypesToProcess', 'FormatsToProcess', 'NestedModules', 'FunctionsToExport', 'CmdletsToExport', 'VariablesToExport', 'AliasesToExport', 'DscResourcesToExport', 'ModuleList')]
+        [string]
+        $Property,
+
+        [Parameter(Mandatory)]
+        [AllowNull()]
+        [object]
+        $Value
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        $Path | Resolve-Path | Test-ModuleManifest | Where-Object -Property $Property -EQ -Value $Value | Write-Output
+    }
+
+    <#
+        .SYNOPSIS
+        Selects a module by a property name and value.
+
+        .DESCRIPTION
+        The `Select-ModuleByProperty` function selects a module by a property name and value.
+
+        .PARAMETER Path
+        Specifies the path to the module manifest file.
+
+        .PARAMETER Property
+        Specifies the name of the property to test for equality.
+
+        .PARAMETER Value
+        Specifies the value of the property to test for equality.
+
+        .INPUTS
+        [string]  `Select-ModuleByProperty` accepts a string value for the Path parameter from the PowerShell pipeline.
+
+        .OUTPUTS
+        [System.Management.Automation.PSModuleInfo]  `Select-ModuleByProperty` returns a module object to the PowerShell pipeline.
+
+        .EXAMPLE
+        PS> $Path = 'C:\Program Files\WindowsPowerShell\Modules\MyModule\MyModule.psd1'
+        PS> Select-ModuleByProperty -Path $Path -Property 'PowerShellVersion' -Value '5.1'
+        ModuleType Version    Name ExportedCommands
+        ---------- -------    ---- ----------------
+        Script    1.0.0      MyModule {}
+
+        Selected the module by the property value.  Returned the module object.
+
+        .NOTES
+        Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
+
+        .LINK
+        about_Advanced_FUnctions
+    #>
+}
+
+<#
+    Select-ModuleProperty
+#>
+function Select-ModuleProperty {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
+        [SupportsWildcards()]
+        [string]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [ValidateSet('Path', 'Description', 'PowerShellVersion', 'PowerShellHostName', 'PowerShellHostVersion', 'DotNetFrameworkVersion', 'ClrVersion', 'ProcessorArchitecture', 'RequiredModules', 'RequiredAssemblies', 'ScriptsToProcess', 'TypesToProcess', 'FormatsToProcess', 'NestedModules', 'FunctionsToExport', 'CmdletsToExport', 'VariablesToExport', 'AliasesToExport', 'DscResourcesToExport', 'ModuleList')]
+        [string[]]
+        $Property
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        $Path | Resolve-Path | Test-ModuleManifest | Select-Object -Property $Property | Write-Output
+    }
+
+    <#
+        .SYNOPSIS
+        Selects a module property(s) or property expression(s).
+
+        .DESCRIPTION
+        The `Select-ModuleProperty` function selects a module property(s) or property expression(s)..
+
+        .PARAMETER Path
+        Specifies the path to the module manifest file.
+
+        .PARAMETER Property
+        Specifies the name of the property to select.
+
+        .INPUTS
+        [string]  `Select-ModuleProperty` accepts a string value for the Path parameter from the PowerShell pipeline.
+
+        .OUTPUTS
+        [bool]  `Select-ModuleProperty` returns a boolean value indicating the presence or absence of the property.
+
+        .EXAMPLE
+        PS> $Path = 'C:\Program Files\WindowsPowerShell\Modules\MyModule\MyModule.psd1'
+        PS> Select-ModuleProperty -Path $Path -Property 'PowerShellVersion'
+        5.1
+
+        Selected the module property.  Returned the property value.
+
+        .NOTES
+        Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
+
+        .LINK
+        about_Advanced_FUnctions
+    #>
+}
+
+<#
     Test-HasMethod
 #>
 function Test-HasMember {
@@ -40,7 +239,12 @@ function Test-HasMember {
     }
 
     PROCESS {
-        $Object.PSObject.Members | Where-Object -Property Name -EQ $Name | Write-Output
+        if ($null -ne $Object) {
+            $Object.PSObject.Members | Where-Object -Property Name -EQ $Name | Write-Output
+        }
+        else {
+            $false | Write-Output
+        }
     }
 
     <#
@@ -152,7 +356,12 @@ function Test-HasMethod {
     }
 
     PROCESS {
-        $Object.PSObject.Methods | Where-Object -Property Name -EQ $Name | Write-Output
+        if ($null -ne $Object) {
+            $Object.PSObject.Methods | Where-Object -Property Name -EQ $Name | Write-Output
+        }
+        else {
+            $false | Write-Output
+        }
     }
 
     <#
@@ -264,7 +473,12 @@ function Test-HasProperty {
     }
 
     PROCESS {
-        $Object.PSObject.Properties | Where-Object -Property Name -EQ $Name | Write-Output
+        if ($null -ne $Object) {
+            $Object.PSObject.Properties | Where-Object -Property Name -EQ $Name | Write-Output
+        }
+        else {
+            $false | Write-Output
+        }
     }
 
     <#
@@ -332,4 +546,43 @@ function Test-HasProperty {
         .LINK
         Write-Warning
     #>
+}
+
+<#
+    Test-ModuleProperty
+#>
+function Test-ModuleProperty {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
+        [SupportsWildcards()]
+        [string]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [ValidateSet('Path', 'Description', 'PowerShellVersion', 'PowerShellHostName', 'PowerShellHostVersion', 'DotNetFrameworkVersion', 'ClrVersion', 'ProcessorArchitecture', 'RequiredModules', 'RequiredAssemblies', 'ScriptsToProcess', 'TypesToProcess', 'FormatsToProcess', 'NestedModules', 'FunctionsToExport', 'CmdletsToExport', 'VariablesToExport', 'AliasesToExport', 'DscResourcesToExport', 'ModuleList')]
+        [string[]]
+        $Property
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        $Result = $Path | Resolve-Path |
+            Test-ModuleManifest |
+                Select-Object -Property $Property |
+                    Measure-Object -Property $Property |
+                        Where-Object -Property Count -GT 0
+
+        if ($Result) {
+            $true | Write-Output
+        } else {
+            $false | Write-Output
+        }
+    }
 }

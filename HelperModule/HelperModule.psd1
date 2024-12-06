@@ -12,7 +12,7 @@
 RootModule = 'HelperModule.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.2'
+ModuleVersion = '1.0.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -33,7 +33,7 @@ Copyright = 'Copyright (c) 2024, John Merryweather Cooper. All rights reserved.'
 Description = 'Unit test helper functions for PowerShell'
 
 # Minimum version of the PowerShell engine required by this module
-# PowerShellVersion = ''
+PowerShellVersion = '5.1'
 
 # Name of the PowerShell host required by this module
 # PowerShellHostName = ''
@@ -69,10 +69,14 @@ Description = 'Unit test helper functions for PowerShell'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Test-HasMember', 'Test-HasMethod', 'Test-HasProperty'
+FunctionsToExport = 'Select-ModuleByFilter', 'Select-ModuleByProperty',
+    'Test-HasMember', 'Test-HasMethod', 'Test-HasProperty',
+    'Test-ModuleProperty'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = 'Test-HasMember', 'Test-HasMethod', 'Test-HasProperty'
+CmdletsToExport = 'Select-ModuleByFilter', 'Select-ModuleByProperty',
+    'Test-HasMember', 'Test-HasMethod', 'Test-HasProperty',
+    'Test-ModuleProperty'
 
 # Variables to export from this module
 VariablesToExport = '*'
