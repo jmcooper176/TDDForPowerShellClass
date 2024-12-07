@@ -94,9 +94,50 @@ class Vine : System.IDisposable
         }
     }
 
+    [bool]Equals([Vine]$other)
+    {
+        if ($null -eq $other) {
+            return $false
+        }
+
+        if ($this.Type -ne $other.Type) {
+            return $false
+        }
+
+        if ($this.Value -ne $other.Value) {
+            return $false
+        }
+
+        return $true
+    }
+
+    [int]GetHashCode()
+    {
+        return [Tuple]::Create($this.Value, $this.Type).GetHashCode()
+    }
+
+    [bool]NotEquals([Vine]$other)
+    {
+        return -not $this.Equals($other)
+    }
+
     <#
         Static Methods
     #>
+    static [bool]Equals([Vine]$First, [Vine]$Second)
+    {
+        if ($null -eq $First) {
+            return $false
+        }
+
+        return $First.Equals($Second)
+    }
+
+    static [bool]NotEquals([Vine]$First, [Vine]$Second)
+    {
+        return -not $First.Equals($Second)
+    }
+
     static [void]Swap([Vine]$First, [Vine]$Second)
     {
         $swapValue = $First.Value

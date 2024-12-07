@@ -75,6 +75,11 @@ class Vine : System.IDisposable
     <#
         Public Methods
     #>
+    [object]Cast([Type]$Type)
+    {
+        return [Convert]::ChangeType($this.Value, $Type)
+    }
+    
     [void]Dispose() {
         $this.Dispose($true)
     }
@@ -94,9 +99,72 @@ class Vine : System.IDisposable
         }
     }
 
+    [void]Emplace([object]$Value)
+    {
+        $this.Value = $Value
+    }
+
+    [void]Emplace([object]$Value, [Type]$Type)
+    {
+        $this.Value = $Value
+        $this.Type = $Type
+    }
+
+    [void]Emplace([Vine]$other)
+    {
+        $this.Value = $other.Value
+        $this.Type = $other.Type
+    }
+    
+    [bool]Equals([Vine]$other)
+    {
+        if ($null -eq $other) {
+            return $false
+        }
+
+        if ($this.Type -ne $other.Type) {
+            return $false
+        }
+
+        if ($this.Value -ne $other.Value) {
+            return $false
+        }
+
+        return $true
+    }
+
+    [int]GetHashCode()
+    {
+        return [Tuple]::Create($this.Value, $this.Type).GetHashCode()
+    }
+
+    [bool]HasValue()
+    {
+        return $null -ne $this.Value
+    }
+
+    [bool]NotEquals([Vine]$other)
+    {
+        return -not $this.Equals($other)
+    }
+
     <#
         Static Methods
     #>
+    static [bool]Equals([Vine]$First, [Vine]$Second)
+    {
+        if ($null -eq $First) {
+            return $false
+        }
+
+        return $First.Equals($Second)
+    }
+
+    static [bool]NotEquals([Vine]$First, [Vine]$Second)
+    {
+        return -not $First.Equals($Second)
+    }
+
     static [void]Swap([Vine]$First, [Vine]$Second)
     {
         $swapValue = $First.Value

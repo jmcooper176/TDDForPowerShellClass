@@ -96,11 +96,13 @@ Refinement to:
 Refinement to: 
 
 * static [type]BaseType([Vine])
+* static [bool]CanConvert([Vine], [Vine])
 * static [type]DeclaringType([Vine])
 * static [bool]HasElementType([Vine])
 * static [bool]IsArray([Vine])
-* static [bool]IsAssignableTo([Vine])
+* static [bool]IsAssignableFrom([Vine], [Vine])
+* static [bool]IsAssignableTo([Vine], [Vine])
 * static [bool]IsClass([Vine])
-* static [bool]IsInstanceOfType([Vine])
-* static [bool]IsSubclassOf([Vine])
+* static [bool]IsInstanceOfType([Vine], [Vine])
+* static [bool]IsSubclassOf([Vine], [Vine])
 * static [bool]IsValueType([Vine])
