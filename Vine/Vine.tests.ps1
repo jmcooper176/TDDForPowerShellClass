@@ -1,5 +1,4 @@
-using module .\Vine.psm1
-
+#using module .\Vine.psd1
 <#
     Vine Pester Tests Based on the Pester Framework and STL Any Class
 

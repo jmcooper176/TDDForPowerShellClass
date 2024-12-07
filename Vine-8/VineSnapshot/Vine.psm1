@@ -239,26 +239,33 @@ class Vine : System.IDisposable
 #>
 function New-Vine {
     [CmdletBinding(SupportsShouldProcess)]
-    [OutputType([Vine])]
     param (
         [AllowNull()]
         [object]
-        $Value = $null,
+        $Value,
 
         [ValidateNotNull()]
         [type]
-        $Type = [object]
+        $Type,
+
+        [hashtable]
+        $Properties
     )
 
     Set-StrictMode -Version 3.0
     Set-Variable -Name 'CmdletName' -Option ReadOnly -Value $PSCmdlet.MyInvocation.MyCommand.Name -WhatIf:$false
 
-    if (($null -ne $Value) -or ($Type -ne [object])) {
+    if ($PSBoundParameters.ContainsKey('Properties')) {
+        if ($PSCmdlet.ShouldProcess('Properties Constructor', $CmdletName)) {
+            [Vine]@($Properties) | Write-Output
+        }
+    }
+    elseif ($PSBoundParameters.ContainsKey('Value') -and $PSBoundParameters.ContainsKey('Type')) {
         if ($PSCmdlet.ShouldProcess('Value and Type Constructor', $CmdletName)) {
             [Vine]::new($Value, $Type) | Write-Output
         }
     }
-    elseif ($null -ne $Value) {
+    elseif ($PSBoundParameters.ContainsKey('Value')) {
         if ($PSCmdlet.ShouldProcess('Value Constructor', $CmdletName)) {
             [Vine]::new($Value) | Write-Output
         }
