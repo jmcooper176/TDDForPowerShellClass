@@ -70,11 +70,11 @@ PowerShellVersion = '5.1'
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = 'Add-TypeAccelerator', 'Get-TypeAccelerator', 'Get-TypeAcceleratorClass',
-    'Register-TypeAccelerator', 'Remove-TypeAccelerator', 'Test-TypeAccelerator'
+    'Register-TypeAccelerator', 'Remove-TypeAccelerator', 'Test-TypeAcceleratorRegistered'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = 'Add-TypeAccelerator', 'Get-TypeAccelerator', 'Get-TypeAcceleratorClass',
-    'Register-TypeAccelerator', 'Remove-TypeAccelerator', 'Test-TypeAccelerator'
+    'Register-TypeAccelerator', 'Remove-TypeAccelerator', 'Test-TypeAcceleratorRegistered'
 
 # Variables to export from this module
 VariablesToExport = '*'
