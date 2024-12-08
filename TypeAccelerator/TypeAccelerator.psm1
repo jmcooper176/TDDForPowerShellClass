@@ -218,7 +218,11 @@ function Register-TypeAccelerator {
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [type[]]
-        $ExportableType
+        $ExportableType,
+
+        [Parameter(Mandatory)]
+        [System.Management.Automation.InvocationInfo]
+        $InvocationInfo
     )
 
     BEGIN {
@@ -235,7 +239,7 @@ function Register-TypeAccelerator {
                 $_ | Add-TypeAccelerator
 
                 # Remove type accelerators when the module is removed.
-                $MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
+                $InvocationInfo.MyCommand.ScriptBlock.Module.OnRemove = {
                     $_ | Remove-TypeAccelerator
                 }.GetNewClosure()
             }
@@ -251,6 +255,9 @@ function Register-TypeAccelerator {
 
         .PARAMETER ExportableType
         Specifies the exportable types to register as type accelerators.
+
+        .PARAMETER InvocationInfo
+        Specifies the invocation information of the OnRemove script block.
 
         .INPUTS
         System.Type[]  You can pipe types to `Register-TypeAccelerator`.
@@ -381,15 +388,15 @@ function Remove-TypeAccelerator {
     Test-TypeAcceleratorRegistered
 #>
 function Test-TypeAcceleratorRegistered {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'UsingExportableType')]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingExportableType')]
         [type[]]
         $ExportableType,
 
-        [Parameter(Mandatory, ParameterSetName = 'UsingTypeName')]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingTypeName')]
         [ValidateNotNullOrEmpty()]
-        [string]
+        [string[]]
         $TypeName
     )
 
@@ -405,9 +412,18 @@ function Test-TypeAcceleratorRegistered {
         # Check if the type accelerator is registered.
         $ExistingTypeAccelerators = $TypeAcceleratorsClass::Get
 
-        $ExportableType | ForEach-Object -Process {
-            if ($_.FullName -in $ExistingTypeAccelerators.Keys) {
-                return $true
+        if ($PSCmdlet.ParameterSetName -eq 'UsingTypeName') {
+            $TypeName | ForEach-Object -Process {
+                if ($_ -in $ExistingTypeAccelerators.Values) {
+                    return $true
+                }
+            }
+        }
+        else {
+            $ExportableType | ForEach-Object -Process {
+                if ($_.FullName -in $ExistingTypeAccelerators.Keys) {
+                    return $true
+                }
             }
         }
 

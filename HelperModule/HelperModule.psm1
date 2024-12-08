@@ -1,4 +1,156 @@
 <#
+    ConvertFrom-Type
+#>
+function ConvertFrom-Type {
+    [CmdletBinding()]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [type]
+        $Type,
+
+        [switch]
+        $Name
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($Name.IsPresent) {
+            $Type | ForEach-Object -Process { $_.Name } | Write-Output
+        }
+        else {
+            $Type | ForEach-Object -Process { $_.FullName } | Write-Output
+        }
+    }
+
+    <#
+        .SYNOPSIS
+        Converts a type to a string type full name or name.
+
+        .DESCRIPTION
+        The `ConvertFrom-Type` function converts a type to a string type full name or name.
+
+        .PARAMETER Type
+        Specifies the type object to convert.
+
+        .PARAMETER Name
+        Indicates that the function should return the type name instead of the full type name.
+
+        .INPUTS
+        [type]  `ConvertFrom-Type` accepts a type object for the Type parameter from the PowerShell pipeline.
+
+        .OUTPUTS
+        [string]  `ConvertFrom-Type` returns a string type name to the PowerShell pipeline.
+
+        .EXAMPLE
+        PS> $Type = [System.String]
+        PS> ConvertFrom-Type -Type $Type
+
+        System.String
+
+        Converted the type to a string type name.  Returned the string type name.
+
+        .EXAMPLE
+        PS> $Type = [System.String]
+        PS> ConvertFrom-Type -Type $Type -Name
+
+        String
+
+        Converted the type to a string type name.  Returned the string type name.
+
+        .NOTES
+        Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
+
+        .LINK
+        about_Advanced_FUnctions
+
+        .LINK
+        ForEach-Object
+
+        .LINK
+        Set-StrictMode
+
+        .LINK
+        Set-Variable
+
+        .LINK
+        Write-Output
+    #>
+}
+
+<#
+    ConvertTo-Type
+#>
+function ConvertTo-Type {
+    [CmdletBinding()]
+    [OutputType([type])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $TypeName
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        $TypeName | ForEach-Object -Process { $_ -as [type] } | Write-Output
+    }
+
+    <#
+        .SYNOPSIS
+        Converts a string type name to a type.
+
+        .DESCRIPTION
+        The `ConvertTo-Type` function converts a string to a type.
+
+        .PARAMETER TypeName
+        Specifies the name or full name of the type name to convert.
+
+        .INPUTS
+        [string]  `ConvertTo-Type` accepts a string value for the TypeName parameter from the PowerShell pipeline.
+
+        .OUTPUTS
+        [type]  `ConvertTo-Type` returns a type object to the PowerShell pipeline.
+
+        .EXAMPLE
+        PS> $TypeName = 'System.String'
+        PS> ConvertTo-Type -TypeName $TypeName
+
+        IsPublic IsSerial Name                                     BaseType
+        -------- -------- ----                                     --------
+        True     False    String                                   System.Object
+
+        Converted the type name to a type object.  Returned the type object.
+
+        .NOTES
+        Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
+
+        .LINK
+        about_Advanced_FUnctions
+
+        .LINK
+        ForEach-Object
+
+        .LINK
+        Set-StrictMode
+
+        .LINK
+        Set-Variable
+
+        .LINK
+        Write-Output
+    #>
+}
+
+<#
     Select-ModuleByFilter
 #>
 function Select-ModuleByFilter {

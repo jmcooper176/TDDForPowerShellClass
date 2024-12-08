@@ -9,50 +9,50 @@ BeforeAll {
     # Arrange
     $ModulePath = Join-Path -Path $PSScriptRoot -ChildPath '.\Vine.psd1' -Resolve
     $HelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\HelperModule\HelperModule.psd1' -Resolve
-
+    $TypeAcceleratorPath = Join-Path -Path $PSScriptRoot -ChildPath '.\TypeAccelerator.psd1' -Resolve
     Set-Variable -Name TheAnswer -Option Constant -Value 42
     Set-Variable -Name LuckyNumber -Option Constant -Value 7
     Set-Variable -Name UnluckyNumber -Option Constant -Value 13
 
     $TestData = @(
-        @{Value = [Int32]::MinValue; Type = [type][Int32];},
-        @{Value = 0; Type = [type][Int32];},
-        @{Value = $TheAnswer; Type = [type][Int32];},
-        @{Value = $LuckyNumber; Type = [type][Int32];},
-        @{Value = $UnluckyNumber; Type = [type][Int32];},
-        @{Value = [Int32]::MaxValue; Type = [type][Int32];},
-        @{Value = [Int64]::MinValue; Type = [type][Int64];},
-        @{Value = 0L; Type = [type][Int64];},
-        @{Value = [Int64]$TheAnswer; Type = [type][Int64];},
-        @{Value = [Int64]$LuckyNumber; Type = [type][Int64];},
-        @{Value = [Int64]$UnluckyNumber; Type = [type][Int64];},
-        @{Value = [Int64]::MaxValue; Type = [type][Int64];},
-        @{Value = [decimal]::MinValue; Type = [decimal].AsType();},
-        @{Value = [decimal]0; Type = [decimal].AsType();},
-        @{Value = [decimal]$TheAnswer; Type = [decimal].AsType();},
-        @{Value = [decimal]$LuckyNumber; Type = [decimal].AsType();},
-        @{Value = [decimal]$UnluckyNumber; Type = [decimal].AsType();},
-        @{Value = [decimal]::MaxValue; Type = [decimal].AsType();},
-        @{Value = [double]::MinValue; Type = [double].AsType();},
-        @{Value = [double]0.0; Type = [double].AsType();},
-        @{Value = [double]::Epsilon; Type = [double].AsType();},
-        @{Value = $TheAnswer * 1.0; Type = [double].AsType();},
-        @{Value = $LuckyNumber * 1.0; Type = [double].AsType();},
-        @{Value = $UnluckyNumber * 1.0; Type = [double].AsType();},
-        @{Value = [double]::MaxValue; Type = [double].AsType();},
-        @{Value = [Single]::MinValue; Type = [Single].AsType();},
-        @{Value = [Single]0.0; Type = [Single].AsType();},
-        @{Value = [Single]::Epsilon; Type = [Single].AsType();},
-        @{Value = $TheAnswer * 1.0; Type = [Single].AsType();},
-        @{Value = $LuckyNumber * 1.0; Type = [Single].AsType();},
-        @{Value = $UnluckyNumber * 1.0; Type = [Single].AsType();},
-        @{Value = [Single]::MaxValue; Type = [Single].AsType();},
-        @{Value = -$TheAnswer; Type = [type][Int32];},
-        @{Value = -$LuckyNumber; Type = [type][Int32];},
-        @{Value = -$UnluckyNumber; Type = [type][Int32];},
-        @{Value = [string]$TheAnswer; Type = [string].AsType();},
-        @{Value = [string]$LuckyNumber; Type = [string].AsType();},
-        @{Value = [string]$UnluckyNumber; Type = [string].AsType();}
+        @{Value = [Int32]::MinValue; Type = [type][Int32]; },
+        @{Value = 0; Type = [type][Int32]; },
+        @{Value = $TheAnswer; Type = [type][Int32]; },
+        @{Value = $LuckyNumber; Type = [type][Int32]; },
+        @{Value = $UnluckyNumber; Type = [type][Int32]; },
+        @{Value = [Int32]::MaxValue; Type = [type][Int32]; },
+        @{Value = [Int64]::MinValue; Type = [type][Int64]; },
+        @{Value = 0L; Type = [type][Int64]; },
+        @{Value = [Int64]$TheAnswer; Type = [type][Int64]; },
+        @{Value = [Int64]$LuckyNumber; Type = [type][Int64]; },
+        @{Value = [Int64]$UnluckyNumber; Type = [type][Int64]; },
+        @{Value = [Int64]::MaxValue; Type = [type][Int64]; },
+        @{Value = [decimal]::MinValue; Type = [decimal].AsType(); },
+        @{Value = [decimal]0; Type = [decimal].AsType(); },
+        @{Value = [decimal]$TheAnswer; Type = [decimal].AsType(); },
+        @{Value = [decimal]$LuckyNumber; Type = [decimal].AsType(); },
+        @{Value = [decimal]$UnluckyNumber; Type = [decimal].AsType(); },
+        @{Value = [decimal]::MaxValue; Type = [decimal].AsType(); },
+        @{Value = [double]::MinValue; Type = [double].AsType(); },
+        @{Value = [double]0.0; Type = [double].AsType(); },
+        @{Value = [double]::Epsilon; Type = [double].AsType(); },
+        @{Value = $TheAnswer * 1.0; Type = [double].AsType(); },
+        @{Value = $LuckyNumber * 1.0; Type = [double].AsType(); },
+        @{Value = $UnluckyNumber * 1.0; Type = [double].AsType(); },
+        @{Value = [double]::MaxValue; Type = [double].AsType(); },
+        @{Value = [Single]::MinValue; Type = [Single].AsType(); },
+        @{Value = [Single]0.0; Type = [Single].AsType(); },
+        @{Value = [Single]::Epsilon; Type = [Single].AsType(); },
+        @{Value = $TheAnswer * 1.0; Type = [Single].AsType(); },
+        @{Value = $LuckyNumber * 1.0; Type = [Single].AsType(); },
+        @{Value = $UnluckyNumber * 1.0; Type = [Single].AsType(); },
+        @{Value = [Single]::MaxValue; Type = [Single].AsType(); },
+        @{Value = - $TheAnswer; Type = [type][Int32]; },
+        @{Value = - $LuckyNumber; Type = [type][Int32]; },
+        @{Value = - $UnluckyNumber; Type = [type][Int32]; },
+        @{Value = [string]$TheAnswer; Type = [string].AsType(); },
+        @{Value = [string]$LuckyNumber; Type = [string].AsType(); },
+        @{Value = [string]$UnluckyNumber; Type = [string].AsType(); }
     )
 
     $MethodList = @(
@@ -88,232 +88,253 @@ BeforeAll {
     # Act
     Import-Module -Name $ModulePath -Verbose -Force
     Import-Module -Name $HelperModulePath -Verbose -Force
+    Import-Module -Name $TypeAcceleratorPath -Verbose -Force
 
     # Assert
     Get-Module -Name 'Vine' | Should -Not -BeNullOrEmpty
     Get-Module -Name 'HelperModule' | Should -Not -BeNullOrEmpty
+    Get-Module -Name 'TypeAccelerator' | Should -Not -BeNullOrEmpty
 }
 
 AfterAll {
     # Act
     Get-Module -Name 'HelperModule' | Remove-Module -Verbose
     Get-Module -Name 'Vine' | Remove-Module -Verbose
+    Get-Module -Name 'TypeAccelerator' | Remove-Module -Verbose
 
     # Assert
     Get-Module -Name 'HelperModule' | Should -BeNullOrEmpty
     Get-Module -Name 'Vine' | Should -BeNullOrEmpty
+    Get-Module -Name 'TypeAccelerator' | Should -BeNullOrEmpty
 }
 
 Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
-    Context -Name 'New-Vine Cmdlet Constructor' {
-        Describe -Name 'Cmdlet Constructor' -Tag 'Cmdlet Constructor Tests' {
-            It -Name 'Construct Vine and should not throw' -Tag @('Unit', 'Test') {
-                # Arrange, Act, and Assert
-                { New-Vine } | Should -Not -Throw
-            }
+    Context -Name 'New-Vine Cmdlet Default Constructor' {
+        It -Name 'Construct Vine and should not throw' -Tag @('Unit', 'Test') {
+            # Arrange, Act, and Assert
+            { New-Vine } | Should -Not -Throw
+        }
 
-            It -Name 'Construct Vine which is not null or empty' -Tag @('Unit', 'Test') {
-                # Arrange, Act, and Assert
-                $vine = New-Vine
-
-                # Assert
-                $vine | Should -Not -BeNullOrEmpty
-            }
-
-            It -Name "Construct Vine which is of Type 'Vine'" -Tag @('Unit', 'Test') {
-                # Arrange and Act
-                $vine = New-Vine
-
-                # Assert
-                $vine.GetType() | Should -BeOfType 'Vine'
-            }
-
-            It -Name 'Construct Vine with Parameter Value' -ForEach $TestData -Tag @('Unit', 'Test') {
-                # Arrange, Act, and Assert
-                { New-Vine -Value $Value } | Should -Not -Throw
-            }
-
-            It -Name 'Construct Vine with Parameter Value which is not null or empty' -ForEach $TestData -Tag @('Unit', 'Test') {
-                # Arrange, Act, and Assert
-                $vine = New-Vine -Value $Value
-
-                # Assert
-                $vine | Should -Not -BeNullOrEmpty
-            }
-
-            It -Name "Construct Vine with Parameter Value which is of Type 'Vine'" -ForEach $TestData -Tag @('Unit', 'Test') {
-                # Arrange and Act
-                $vine = New-Vine -Value $Value
-
-                # Assert
-                $vine.GetType() | Should -BeOfType 'Vine'
-            }
-
-            It -Name 'Construct Vine with Parameter Value and Parameter Type [Int32]' -ForEach $TestData -Tag @('Unit', 'Test') {
-                # Arrange, Act, and Assert
-                { New-Object -TypeName 'Vine' -ArgumentList $Value, $Type } | Should -Not -Throw
-            }
-
-            It -Name 'Construct Vine with Parameter Value and Parameter Type [Int32] which is not null or empty' -ForEach $TestData -Tag @('Unit', 'Test') {
-                # Arrange, Act, and Assert
-                $vine = New-Vine -Value $Value -Type $Type
-
-                # Assert
-                $vine | Should -Not -BeNullOrEmpty
-            }
-
-            It -Name "Construct Vine with Parameter Value and Parameter Type [Int32] which is of Type 'Vine'" -ForEach $TestData -Tag @('Unit', 'Test') {
-                # Arrange
-                $vine = New-Vine -Value $Value -Type $Type
-
-                # Assert
-                $vine.GetType() | Should -BeOfType 'Vine'
-            }
-
-            It -Name 'Construct Vine has properties' -ForEach $PropertyList -Tag @('Unit', 'Test') {
-                # Arrange
-                $vine = New-Vine
-
-                # Act
-                Write-Verbose -Message "Testing property $_"
-
-                # Assert
-                $_ | Test-HasProperty -Object $vine | Should -BeTrue
-            }
-
-            It -Name 'Construct Vine has methods' -ForEach $PropertyList -Tag @('Unit', 'Test') {
-                # Arrange
-                $vine = New-Vine
-
-                # Act
-                Write-Verbose -Message "Testing method $_"
-
-                # Assert
-                $_ | Test-HasMethod -Object $vine | Should -BeTrue
-            }
-
-            It -Name 'Construct Vine with a value' -ForEach $TestData -Tag @('Unit', 'Test') {
-                # Arrange, Act, and Assert
-                { New-Vine -Value $Value } | Should -Not -Throw
-            }
-
-            It -Name 'Construct Vine with a value and vine should not be null or empty' -ForEach $TestData -Tag @('Unit', 'Test') {
-                # Arrange and Act
-                $vine = New-Vine -Value $Value
-
-                # Assert
-                $vine | Should -Not -BeNullOrEmpty
-            }
-
-            It -Name 'Construct Vine with a value and vine should have properties' -ForEach $PropertyList -Tag @('Unit', 'Test') {
-                # Arrange, Act, and Assert
-                $vine = New-Vine -Value $TheAnswer
-
-                # Act
-                Write-Verbose -Message "Testing property $_"
-
-                # Assert
-                $_ | Test-HasProperty -Object $vine | Should -BeTrue
-            }
-
-            It -Name 'Construct Vine with a value and vine should have Property Value with value TheAnswer' -ForEach $TestData -Tag @('Unit', 'Test') {
-                # Arrange, Act, and Assert
-                $vine = New-Vine -Value $Value
-
-                # Assert
-                $vine.Value | Should -Be $Value
-            }
-
-            It -Name "Construct Vine with a value and vine should be of type 'Vine'" -ForEach $TestData -Tag @('Unit', 'Test') {
-                # Arrange
-                $vine = New-Vine -Value $Value
-
-                # Act
-                $type = $vine.GetType()
-
-                # Assert
-                $type.Name | Should -Be 'Vine'
-            }
-
-            It -Name 'Construct Vine with a value and vine should have property Value' -Tag @('Unit', 'Test') {
-                # Arrange, Act, and Assert
-                $vine = New-Vine -Value $TheAnswer
-
-                # Assert
-                Test-HasProperty -Object $vine -Name 'Value' | Should -BeTrue
-            }
-
-            It -Name 'Construct Vine with a value and vine.Value should equal value' -ForEach $TestData -Tag @('Unit', 'Test') {
-                # Arrange, Act, and Assert
-                $vine = New-Vine -Value $Value
-
-                # Assert
-                $vine.Value | Should -Be $Value
-            }
-
-            It -Name 'Construct Vine with a value and a type' -ForEach $TestData -Tag @('Unit', 'Test') {
-                # Arrange, Act, and Assert
-                { New-Vine -Value $Value -Type $Type } | Should -Not -Throw
-            }
-
-            It -Name 'Construct Vine with a value and a type and vine should not be null or empty' -ForEach $TestData -Tag @('Unit', 'Test') {
-                # Arrange, Act, and Assert
-                $vine = New-Vine -Value $Value -Type $Type
-
-                # Assert
-                $vine | Should -Not -BeNullOrEmpty
-            }
-
-            It -Name "Construct Vine with a value and a type and vine should be of type 'Vine'" -ForEach $TestData -Tag @('Unit', 'Test') {
+        It -Name '[Vine] TypeAccelerator should be Registered' -Test {
             # Arrange
-                $vine = New-Vine -Value $Value -Type $Type
+            New-Vine
+            $type = ('Vine' -as [type])
 
-                # Act
-                $type = $vine.GetType()
+            # Act and Assert
+            Test-TypeAcceleratorRegistered -ExportableType $type | Should -BeTrue
+        }
 
-                # Assert
-                $type.Name | Should -Be 'Vine'
-            }
+        It -Name 'Construct Vine which is not null or empty' -Tag @('Unit', 'Test') {
+            # Arrange, Act, and Assert
+            $vine = New-Vine
 
-            It -Name 'Construct Vine with a value and a type and vine should have properties' -ForEach $PropertyList -Tag @('Unit', 'Test') {
-                # Arrange, Act, and Assert
-                $vine = New-Vine -Value $TheAnswer -Type ([type][Int32])
+            # Assert
+            $vine | Should -Not -BeNullOrEmpty
+        }
 
-                # Act
-                Write-Verbose -Message "Testing property $_"
+        It -Name "Construct Vine which is of Type 'Vine'" -Tag @('Unit', 'Test') {
+            # Arrange and Act
+            $vine = New-Vine
 
-                # Assert
-                $_ | Test-HasProperty -Object $vine | Should -BeTrue
-            }
+            # Assert
+            $vine.GetType() | Should -BeOfType 'Vine'
+        }
 
-            It -Name 'Construct Vine with a value and a type and vine.Value equals value' -ForEach $TestData -Tag @('Unit', 'Test') {
-                # Arrange, Act, and Assert
-                $vine = New-Vine -Value $Value -Type $Type
+        It -Name 'Construct Vine with Parameter Value and Parameter Type [Int32] which is not null or empty' -ForEach $TestData -Tag @('Unit', 'Test') {
+            # Arrange, Act, and Assert
+            $vine = New-Vine -Value $Value -Type $Type
 
-                # Assert
-                $vine.Value | Should -Be $Value
-            }
+            # Assert
+            $vine | Should -Not -BeNullOrEmpty
+        }
 
-            It -Name 'Construct Vine with a value and a type and vine.Type equals type' -ForEach $TestData -Tag @('Unit', 'Test') {
-                # Arrange
-                $vine = New-Vine -Value $Value -Type $Type
+        It -Name "Construct Vine with Parameter Value and Parameter Type [Int32] which is of Type 'Vine'" -ForEach $TestData -Tag @('Unit', 'Test') {
+            # Arrange
+            $vine = New-Vine -Value $Value -Type $Type
 
-                # Act and Assert
-                $vine.Type | Should -Be $Type
-            }
+            # Assert
+            $vine.GetType() | Should -BeOfType 'Vine'
+        }
+
+        It -Name 'Construct Vine has properties' -ForEach $PropertyList -Tag @('Unit', 'Test') {
+            # Arrange
+            $vine = New-Vine
+
+            # Act
+            Write-Verbose -Message "Testing property $_"
+
+            # Assert
+            $_ | Test-HasProperty -Object $vine | Should -BeTrue
+        }
+
+        It -Name 'Construct Vine has methods' -ForEach $PropertyList -Tag @('Unit', 'Test') {
+            # Arrange
+            $vine = New-Vine
+
+            # Act
+            Write-Verbose -Message "Testing method $_"
+
+            # Assert
+            $_ | Test-HasMethod -Object $vine | Should -BeTrue
+        }
+
+        It -Name 'Construct Vine with a value' -ForEach $TestData -Tag @('Unit', 'Test') {
+            # Arrange, Act, and Assert
+            { New-Vine -Value $Value } | Should -Not -Throw
+        }
+
+        It -Name 'Construct Vine with a value and vine should not be null or empty' -ForEach $TestData -Tag @('Unit', 'Test') {
+            # Arrange and Act
+            $vine = New-Vine -Value $Value
+
+            # Assert
+            $vine | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'Construct Vine with a value and vine should have properties' -ForEach $PropertyList -Tag @('Unit', 'Test') {
+            # Arrange, Act, and Assert
+            $vine = New-Vine -Value $TheAnswer
+
+            # Act
+            Write-Verbose -Message "Testing property $_"
+
+            # Assert
+            $_ | Test-HasProperty -Object $vine | Should -BeTrue
+        }
+
+        It -Name 'Construct Vine with a value and vine should have Property Value with value TheAnswer' -ForEach $TestData -Tag @('Unit', 'Test') {
+            # Arrange, Act, and Assert
+            $vine = New-Vine -Value $Value
+
+            # Assert
+            $vine.Value | Should -Be $Value
+        }
+
+        It -Name "Construct Vine with a value and vine should be of type 'Vine'" -ForEach $TestData -Tag @('Unit', 'Test') {
+            # Arrange
+            $vine = New-Vine -Value $Value
+
+            # Act
+            $type = $vine.GetType()
+
+            # Assert
+            $type.Name | Should -Be 'Vine'
+        }
+
+        It -Name 'Construct Vine with a value and vine should have property Value' -Tag @('Unit', 'Test') {
+            # Arrange, Act, and Assert
+            $vine = New-Vine -Value $TheAnswer
+
+            # Assert
+            Test-HasProperty -Object $vine -Name 'Value' | Should -BeTrue
+        }
+
+        It -Name 'Construct Vine with a value and vine.Value should equal value' -ForEach $TestData -Tag @('Unit', 'Test') {
+            # Arrange, Act, and Assert
+            $vine = New-Vine -Value $Value
+
+            # Assert
+            $vine.Value | Should -Be $Value
+        }
+
+        It -Name 'Construct Vine with a value and a type' -ForEach $TestData -Tag @('Unit', 'Test') {
+            # Arrange, Act, and Assert
+            { New-Vine -Value $Value -Type $Type } | Should -Not -Throw
+        }
+
+        It -Name 'Construct Vine with a value and a type and vine should not be null or empty' -ForEach $TestData -Tag @('Unit', 'Test') {
+            # Arrange, Act, and Assert
+            $vine = New-Vine -Value $Value -Type $Type
+
+            # Assert
+            $vine | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name "Construct Vine with a value and a type and vine should be of type 'Vine'" -ForEach $TestData -Tag @('Unit', 'Test') {
+            # Arrange
+            $vine = New-Vine -Value $Value -Type $Type
+
+            # Act
+            $type = $vine.GetType()
+
+            # Assert
+            $type.Name | Should -Be 'Vine'
+        }
+
+        It -Name 'Construct Vine with a value and a type and vine should have properties' -ForEach $PropertyList -Tag @('Unit', 'Test') {
+            # Arrange, Act, and Assert
+            $vine = New-Vine -Value $TheAnswer -Type ([type][Int32])
+
+            # Act
+            Write-Verbose -Message "Testing property $_"
+
+            # Assert
+            $_ | Test-HasProperty -Object $vine | Should -BeTrue
+        }
+
+        It -Name 'Construct Vine with a value and a type and vine.Value equals value' -ForEach $TestData -Tag @('Unit', 'Test') {
+            # Arrange, Act, and Assert
+            $vine = New-Vine -Value $Value -Type $Type
+
+            # Assert
+            $vine.Value | Should -Be $Value
+        }
+
+        It -Name 'Construct Vine with a value and a type and vine.Type equals type' -ForEach $TestData -Tag @('Unit', 'Test') {
+            # Arrange
+            $vine = New-Vine -Value $Value -Type $Type
+
+            # Act and Assert
+            $vine.Type | Should -Be $Type
         }
     }
 
-    Context -Name 'New-Object Constructor' {
+    Context -Name 'New-Vine Cmdlet Value Constructor' {
+        It -Name 'Construct Vine with Parameter Value' -ForEach $TestData -Tag @('Unit', 'Test') {
+            # Arrange, Act, and Assert
+            { New-Vine -Value $Value } | Should -Not -Throw
+        }
+
+        It -Name 'Construct Vine with Parameter Value which is not null or empty' -ForEach $TestData -Tag @('Unit', 'Test') {
+            # Arrange, Act, and Assert
+            $vine = New-Vine -Value $Value
+
+            # Assert
+            $vine | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name "Construct Vine with Parameter Value which is of Type 'Vine'" -ForEach $TestData -Tag @('Unit', 'Test') {
+            # Arrange and Act
+            $vine = New-Vine -Value $Value
+
+            # Assert
+            $vine.GetType() | Should -BeOfType 'Vine'
+        }
+    }
+
+    Context -Name 'New-Vine Cmdlet Value and Type Constructor' {
+
+    }
+
+    Context -Name 'New-Object Default Constructor' {
         Describe -Name 'Vine Constructor' -Tag 'Constructor Tests' {
             It -Name 'Construct Vine and should not throw' -Tag @('Unit', 'Test') {
                 # Arrange, Act, and Assert
-                { New-Vine } | Should -Not -Throw
+                { New-Object -TypeName 'Vine' } | Should -Not -Throw
+            }
+
+            It -Name '[Vine] TypeAccelerator should be Registered' -Test {
+                # Arrange
+                New-Object -TypeName 'Vine'
+                $type = ('Vine' -as [type])
+
+                # Act and Assert
+                Test-TypeAcceleratorRegistered -ExportableType $type | Should -BeTrue
             }
 
             It -Name 'Construct Vine which is not null or empty' -Tag @('Unit', 'Test') {
                 # Arrange, Act, and Assert
-                $vine = New-Vine
+                $vine = New-Object -TypeName 'Vine'
 
                 # Assert
                 $vine | Should -Not -BeNullOrEmpty
@@ -321,7 +342,7 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
 
             It -Name "Construct Vine which is of Type 'Vine'" -Tag @('Unit', 'Test') {
                 # Arrange and Act
-                $vine = New-Vine
+                $vine = New-Object -TypeName 'Vine'
 
                 # Assert
                 $vine.GetType() | Should -BeOfType 'Vine'
@@ -329,12 +350,12 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
 
             It -Name 'Construct Vine with Parameter Value' -ForEach $TestData -Tag @('Unit', 'Test') {
                 # Arrange, Act, and Assert
-                { New-Vine -Value $Value } | Should -Not -Throw
+                { New-Object -TypeName 'Vine' -ArgumentList $Value } | Should -Not -Throw
             }
 
             It -Name 'Construct Vine with Parameter Value which is not null or empty' -ForEach $TestData -Tag @('Unit', 'Test') {
                 # Arrange, Act, and Assert
-                $vine = New-Vine -Value $Value
+                $vine = New-Object -TypeName 'Vine' -ArgumentList $Value
 
                 # Assert
                 $vine | Should -Not -BeNullOrEmpty
@@ -342,7 +363,7 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
 
             It -Name "Construct Vine with Parameter Value which is of Type 'Vine'" -ForEach $TestData -Tag @('Unit', 'Test') {
                 # Arrange and Act
-                $vine = New-Vine -Value $Value
+                $vine = New-Object -TypeName 'Vine' -ArgumentList $Value
 
                 # Assert
                 $vine.GetType() | Should -BeOfType 'Vine'
@@ -353,9 +374,9 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
                 { New-Object -TypeName 'Vine' -ArgumentList $Value, $Type } | Should -Not -Throw
             }
 
-            It -Name "Construct Vine with Parameter Value and Parameter Type [Int32] which is of Type 'Vine'" -Tag @('Unit', 'Test') {
+            It -Name "Construct Vine with Parameter Value and Parameter Type which is of Type 'Vine'" -ForEach $TestData -Tag @('Unit', 'Test') {
                 # Arrange
-                $vine = New-Object -TypeName 'Vine' 
+                $vine = New-Object -TypeName 'Vine' -ArgumentList $Value, $Type
 
                 # Assert
                 $vine.GetType() | Should -BeOfType 'Vine'
@@ -363,7 +384,7 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
 
             It -Name 'Construct Vine has properties' -ForEach $PropertyList -Tag @('Unit', 'Test') {
                 # Arrange
-                $vine = New-Object -TypeName 'Vine'
+                $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, ('int' -as [type])
 
                 # Act
                 Write-Verbose -Message "Testing property $_"
@@ -372,17 +393,17 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
                 $_ | Test-HasProperty -Object $vine | Should -BeTrue
             }
 
-            It -Name "Construct Vine with property Name equals 'Vine'" -Tag @('Unit', 'Test') {
+            It -Name "Construct Vine with property Name equals 'Vine'" -ForEach $TestData -Tag @('Unit', 'Test') {
                 # Arrange,
-                $vine = New-Object -TypeName 'Vine'
+                $vine = New-Object -TypeName 'Vine' -ArgumentList $Value, $Type
 
                 # Assert
                 $vine.Name | Should -Be 'Vine'
             }
 
-            It -Name "Construct Vine with property FullName equals 'Vine'" -Tag @('Unit', 'Test') {
+            It -Name "Construct Vine with property FullName equals 'Vine'" -ForEach $TestData -Tag @('Unit', 'Test') {
                 # Arrange,
-                $vine = New-Object -TypeName 'Vine'
+                $vine = New-Object -TypeName 'Vine' -ArgumentList $Value, $Type
 
                 # Assert
                 $vine.FullName | Should -Be 'Vine'
@@ -390,7 +411,7 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
 
             It -Name 'Construct Vine has methods' -ForEach $MethodList -Tag @('Unit', 'Test') {
                 # Arrange, Act, and Assert
-                $vine = New-Object -TypeName 'Vine'
+                $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, ('int' -as [type])
 
                 # Act
                 Write-Verbose -Message "Testing method $_"
@@ -399,14 +420,14 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
                 $_ | Test-HasMethod -Object $vine | Should -BeTrue
             }
 
-            It -Name 'Construct Vine with a value' -ForEach $TestData -Tag @('Unit', 'Test') {
+            It -Name 'Construct Vine with a value should not throw' -ForEach $TestData -Tag @('Unit', 'Test') {
                 # Arrange, Act, and Assert
-                { New-Object -TypeName 'Vine' -ArgumentList $Value } | Should -Not -Throw
+                { New-Object -TypeName 'Vine' -ArgumentList $Value, $Type } | Should -Not -Throw
             }
 
             It -Name 'Construct Vine with a value and vine should not be null or empty' -ForEach $TestData -Tag @('Unit', 'Test') {
                 # Arrange, Act, and Assert
-                $vine = New-Object -TypeName 'Vine' -ArgumentList $Value
+                $vine = New-Object -TypeName 'Vine' -ArgumentList $Value, $Type
 
                 # Assert
                 $vine | Should -Not -BeNullOrEmpty
@@ -414,7 +435,7 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
 
             It -Name 'Construct Vine with a value and vine should have properties' -ForEach $PropertyList -Tag @('Unit', 'Test') {
                 # Arrange, Act, and Assert
-                $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer
+                $vine = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, ('int' -as [type])
 
                 # Act
                 Write-Verbose -Message "Testing property $_"
@@ -425,7 +446,7 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
 
             It -Name 'Construct Vine with a value and vine should have Property Value with value TheAnswer' -ForEach $TestData -Tag @('Unit', 'Test') {
                 # Arrange, Act, and Assert
-                $vine = New-Object -TypeName 'Vine' -ArgumentList $Value
+                $vine = New-Object -TypeName 'Vine' -ArgumentList $Value, $Type
 
                 # Assert
                 $vine.Value | Should -Be $Value
@@ -433,7 +454,7 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
 
             It -Name "Construct Vine with a value and vine should be of type 'Vine'" -ForEach $TestData -Tag @('Unit', 'Test') {
                 # Arrange
-                $vine = New-Object -TypeName 'Vine' -ArgumentList $Value
+                $vine = New-Object -TypeName 'Vine' -ArgumentList $Value, $Type
 
                 # Act
                 $type = $vine.GetType()
@@ -444,7 +465,7 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
 
             It -Name 'Construct Vine with a value and vine.Value should equal value' -ForEach $TestData -Tag @('Unit', 'Test') {
                 # Arrange, Act, and Assert
-                $vine = New-Object -TypeName 'Vine' -ArgumentList $Value
+                $vine = New-Object -TypeName 'Vine' -ArgumentList $Value, $Type
 
                 # Assert
                 $vine.Value | Should -Be $Value
@@ -464,7 +485,7 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
             }
 
             It -Name "Construct Vine with a value and a type and vine should be of type 'Vine'" -ForEach $TestData -Tag @('Unit', 'Test') {
-            # Arrange
+                # Arrange
                 $vine = New-Object -TypeName 'Vine' -ArgumentList $Value, $Type
 
                 # Act
@@ -492,10 +513,30 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
         }
     }
 
-    Context -Name 'TypeAccelerator [Vine] Constructor' {
+    Context -Name 'New-Object Value Constructor' {
+        It -Name 'Construct Vine with Parameters Value and Type' -ForEach $TestData -Tag @('Unit', 'Test') {
+            # Arrange, Act, and Assert
+            { New-Object -TypeName 'Vine' -ArgumentList $Value, $Type } | Should -Not -Throw
+        }
+    }
+
+    Context -Name 'New-Object Value and Type Constructor' {
+
+    }
+
+    Context -Name 'TypeAccelerator [Vine] Default Constructor' {
         It -Name 'Construct Vine and should not throw' -Tag @('Unit', 'Test') {
             # Arrange, Act, and Assert
             { [Vine]::new() } | Should -Not -Throw
+        }
+
+        It -Name '[Vine] TypeAccelerator should be Registered' -Test {
+            # Arrange
+            [Vine]::new()
+            $type = ('Vine' -as [type])
+
+            # Act and Assert
+            Test-TypeAcceleratorRegistered -ExportableType $type | Should -BeTrue
         }
 
         It -Name 'Construct Vine which is not null or empty' -Tag @('Unit', 'Test') {
@@ -683,6 +724,14 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
         }
     }
 
+    Context -Name 'TypeAccelerator [Vine] Value Constructor' {
+
+    }
+
+    Context -Name 'TypeAccelerator [Vine] Value and Type Constructor' {
+
+    }
+
     Describe -Name 'Vine Method AsType' -ForEach $TestData -Tag 'Method AsType Tests' {
         Context -Name 'Exists' {
             # Arrange
@@ -694,7 +743,7 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
 
         It -Name 'Construct Vine with a value and a type and AsType should return the type' -ForEach $TestData -Tag @('Unit', 'Test') {
             # Arrange
-            $vine     = New-Object -TypeName 'Vine' -ArgumentList $Value, $Type
+            $vine = New-Object -TypeName 'Vine' -ArgumentList $Value, $Type
             $expected = $vine.Type
             
             # Act
@@ -716,7 +765,7 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
 
         It -Name 'Construct Vine with a value and a type and BaseType should return the type' -ForEach $TestData -Tag @('Unit', 'Test') {
             # Arrange
-            $vine     = New-Object -TypeName 'Vine' -ArgumentList $Value, $Type
+            $vine = New-Object -TypeName 'Vine' -ArgumentList $Value, $Type
             $expected = ($vine.Type).BaseType
             
             # Act
@@ -738,7 +787,7 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
 
         It -Name 'Construct Vine with a value and a type and Cast should return the value' -ForEach $TestData -Tag @('Unit', 'Test') {
             # Arrange
-            $vine     = New-Object -TypeName 'Vine' -ArgumentList $Value, $Type
+            $vine = New-Object -TypeName 'Vine' -ArgumentList $Value, $Type
             $expected = [string]$vine.Value
             
             # Act
@@ -842,7 +891,7 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
 
         It -Name 'Construct Vine with a value and another vine with the same value and compare them for equality' -ForEach $TestData -Tag @('Unit', 'Test') {
             # Arrange
-            $left  = New-Object -TypeName 'Vine' -ArgumentList $Value, $Type
+            $left = New-Object -TypeName 'Vine' -ArgumentList $Value, $Type
             $right = New-Object -TypeName 'Vine' -ArgumentList $Value, $Type
             
             # Act and Assert
@@ -851,7 +900,7 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
     
         It -Name 'Construct Vine with a value and another vine with a different value and compare them for inequality' -Tag @('Unit', 'Test') {
             # Arrange
-            $left  = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
+            $left = New-Object -TypeName 'Vine' -ArgumentList $TheAnswer, [Int32]
             $right = New-Object -TypeName 'Vine' -ArgumentList $LuckyNumber, [Int32]
             
             # Act and Assert
@@ -860,7 +909,7 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
     
         It -Name 'Construct Vine with a value and another vine without a value and compare them for inequality' -ForEach $TestData -Tag @('Unit', 'Test') {
             # Arrange
-            $left  = New-Object -TypeName 'Vine' -ArgumentList $Value, $Type
+            $left = New-Object -TypeName 'Vine' -ArgumentList $Value, $Type
             $right = New-Object -TypeName 'Vine'
             
             # Act and Assert
@@ -869,7 +918,7 @@ Describe -Name 'Vine Class' -Tag 'Red Green Tests' {
     
         It -Name 'Construct Vine without a value and another vine with a value and compare them for inequality' -ForEach $TestData -Tag @('Unit', 'Test') {
             # Arrange
-            $left  = New-Object -TypeName 'Vine'
+            $left = New-Object -TypeName 'Vine'
             $right = New-Object -TypeName 'Vine' -ArgumentList $Value, $Type
             
             # Act and Assert

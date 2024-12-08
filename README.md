@@ -1,6 +1,6 @@
 # Source for the Book "Test Driven Design for PowerShell Classes"
 
-By John Merryweather Cooper
+### By John Merryweather Cooper
 
 Snapshots of source:
 
@@ -52,6 +52,7 @@ Refinements to:
 
 Refinements to:
 
+* add support for registering a TypeAccelerator
 * static [void]Swap([Vine], [Vine]) method
 
 ## Vine-3

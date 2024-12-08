@@ -75,16 +75,6 @@ class Vine : System.IDisposable
     <#
         Public Methods
     #>
-    [type]AsType()
-    {
-        return $this.Type
-    }
-
-    [object]Cast([Type]$Type)
-    {
-        return [Convert]::ChangeType($this.Value, $Type)
-    }
-    
     [void]Dispose() {
         $this.Dispose($true)
     }
@@ -104,127 +94,9 @@ class Vine : System.IDisposable
         }
     }
 
-    [void]Emplace([object]$Value)
-    {
-        $this.Value = $Value
-    }
-
-    [void]Emplace([object]$Value, [Type]$Type)
-    {
-        $this.Value = $Value
-        $this.Type = $Type
-    }
-
-    [void]Emplace([Vine]$other)
-    {
-        $this.Value = $other.Value
-        $this.Type = $other.Type
-    }
-    
-    [bool]Equals([Vine]$other)
-    {
-        if ($null -eq $other) {
-            return $false
-        }
-
-        if ($this.Type -ne $other.Type) {
-            return $false
-        }
-
-        if ($this.Value -ne $other.Value) {
-            return $false
-        }
-
-        return $true
-    }
-
-    [int]GetHashCode()
-    {
-        return [Tuple]::Create($this.Value, $this.Type).GetHashCode()
-    }
-
-    [bool]HasValue()
-    {
-        return $null -ne $this.Value
-    }
-
-    [bool]NotEquals([Vine]$other)
-    {
-        return -not $this.Equals($other)
-    }
-
-    [string]ToString()
-    {
-        return ('{0} as <{1}>' -f $this.Value, $this.Type.FullName)
-    }
-
     <#
         Static Methods
     #>
-    static [type]BaseType([Vine]$other)
-    {
-        return $other.Type.BaseType
-    }
-
-    static [bool]CanConvert([Vine]$other, [Type]$Type)
-    {
-        return $other.Type -as $Type
-    }
-
-    static [type]DeclaringType([Vine]$other)
-    {
-        return $other.Type.DeclaringType
-    }
-
-    static [bool]Equals([Vine]$First, [Vine]$Second)
-    {
-        if ($null -eq $First) {
-            return $false
-        }
-
-        return $First.Equals($Second)
-    }
-
-    static [bool]HasElementType([Vine]$other)
-    {
-        return $other.Type.HasElementType
-    }
-
-    static [bool]IsAssignableFrom([Vine]$First, [Vine]$Second)
-    {
-        return $First.Type.IsAssignableFrom($Second.Type)
-    }
-
-    static [bool]IsAssignableTo([Vine]$First, [Vine]$Second)
-    {
-        return $First.Type.IsAssignableFrom($Second.Type)
-    }
-
-    static [bool]IsClass([Vine]$other)
-    {
-        return $other.Type.IsClass
-    }
-
-    static [bool]IsInstanceOfType([Vine]$First, [Vine]$Second)
-    {
-        return $First.Type.IsInstanceOfType($Second.Value)
-    }
-
-    static [bool]IsSubclassOf([Vine]$First, [Vine]$Second)
-    {
-        return $First.Type.IsSubclassOf($Second.Type)
-    }
-
-    static [bool]IsValueType([Vine]$other)
-    {
-        return $other.Type.IsValueType
-    }
-
-    static [bool]NotEquals([Vine]$First, [Vine]$Second)
-    {
-        return -not $First.Equals($Second)
-    }
-
     static [void]Swap([Vine]$First, [Vine]$Second)
     {
         $swapValue = $First.Value
@@ -235,37 +107,74 @@ class Vine : System.IDisposable
 }
 
 <#
+    Initialization Script
+#>
+# Define the types to export with type accelerators.
+$ExportableTypes =@(
+    [Vine]
+)
+
+# Get the internal TypeAccelerators class to use its static methods.
+$TypeAcceleratorsClass = [psobject].Assembly.GetType(
+    'System.Management.Automation.TypeAccelerators'
+)
+
+# Ensure none of the types would clobber an existing type accelerator.
+# If a type accelerator with the same name exists, throw an exception.
+$ExistingTypeAccelerators = $TypeAcceleratorsClass::Get
+foreach ($Type in $ExportableTypes) {
+    if ($Type.FullName -in $ExistingTypeAccelerators.Keys) {
+        $Message = @(
+            "Unable to register type accelerator '$($Type.FullName)'"
+            'Accelerator already exists.'
+        ) -join ' - '
+
+throw [System.Management.Automation.ErrorRecord]::new(
+            [System.InvalidOperationException]::new($Message),
+            'TypeAcceleratorAlreadyExists',
+            [System.Management.Automation.ErrorCategory]::InvalidOperation,
+            $Type.FullName
+        )
+    }
+}
+
+# Add type accelerators for every exportable type.
+foreach ($Type in $ExportableTypes) {
+    $TypeAcceleratorsClass::Add($Type.FullName, $Type)
+}
+
+# Remove type accelerators when the module is removed.
+$MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
+    foreach($Type in $ExportableTypes) {
+        $TypeAcceleratorsClass::Remove($Type.FullName)
+    }
+}.GetNewClosure()
+
+<#
     New-Vine
 #>
 function New-Vine {
     [CmdletBinding(SupportsShouldProcess)]
+    [OutputType([Vine])]
     param (
         [AllowNull()]
         [object]
-        $Value,
+        $Value = $null,
 
         [ValidateNotNull()]
         [type]
-        $Type,
-
-        [hashtable]
-        $Properties
+        $Type = [object]
     )
 
     Set-StrictMode -Version 3.0
     Set-Variable -Name 'CmdletName' -Option ReadOnly -Value $PSCmdlet.MyInvocation.MyCommand.Name -WhatIf:$false
 
-    if ($PSBoundParameters.ContainsKey('Properties')) {
-        if ($PSCmdlet.ShouldProcess('Properties Constructor', $CmdletName)) {
-            [Vine]@($Properties) | Write-Output
-        }
-    }
-    elseif ($PSBoundParameters.ContainsKey('Value') -and $PSBoundParameters.ContainsKey('Type')) {
+    if (($null -ne $Value) -or ($Type -ne [object])) {
         if ($PSCmdlet.ShouldProcess('Value and Type Constructor', $CmdletName)) {
             [Vine]::new($Value, $Type) | Write-Output
         }
     }
-    elseif ($PSBoundParameters.ContainsKey('Value')) {
+    elseif ($null -ne $Value) {
         if ($PSCmdlet.ShouldProcess('Value Constructor', $CmdletName)) {
             [Vine]::new($Value) | Write-Output
         }
