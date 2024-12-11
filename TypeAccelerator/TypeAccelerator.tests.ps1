@@ -192,17 +192,34 @@ Describe 'Add-TypeAccelerator Unit Tests' {
             Test-Path @testPathSplat | Should -BeTrue
         }
 
-        It -Name 'Mock Add-TypeAccelerator' -ForEach $TestData -Tag @('Unit', 'Test') {
+        It -Name 'Mock Add-TypeAccelerator and prove invoked' -ForEach $TestData -Tag @('Unit', 'Test') {
             # Arrange
             Mock -CommandName 'Add-TypeAccelerator' -ModuleName 'TypeAccelerator' -MockWith {
-                Write-Information -MessageData "Mocked Add-TypeAccelerator -ExportableType '[$($_.Name)]'" -InformationAction Continue
+                Write-Information -MessageData "Mocked Add-TypeAccelerator -ExportableType '[$($FullName)]' -InvocationInfo <MyInvocationInfo>" -InformationAction Continue
+                $ExportableTypeState['ExportableType'] = $FullName
+                $ExportableTypeState['InvocationInfo'] = $MyInvocation
             }
 
             # Act
-            Add-TypeAccelerator -ExportableType $Type
+            Add-TypeAccelerator -ExportableType $Accelerator -InvocationInfo $MyInvocation
 
             # Assert
             Should -Invoke 'Add-TypeAccelerator' -Exactly 1
+        }
+
+        It -Name 'Mock Add-TypeAccelerato and global state should match' -ForEach $TestData -Tag @('Unit', 'Test') {
+            # Arrange
+            Mock -CommandName 'Add-TypeAccelerator' -ModuleName 'TypeAccelerator' -MockWith {
+                Write-Information -MessageData "Mocked Add-TypeAccelerator -ExportableType '[$($FullName)]' -InvocationInfo <MyInvocationInfo>" -InformationAction Continue
+                $ExportableTypeState['ExportableTypeName'] = $FullName
+                $ExportableTypeState['InvocationInfo'] = $MyInvocation
+            }
+
+            # Act
+            Add-TypeAccelerator -ExportableType $Accelerator -InvocationInfo $MyInvocation
+
+            # Assert
+            $ExportableTypeState['ExportableTypeName'] | Should -Be $FullName
         }
     }
 }

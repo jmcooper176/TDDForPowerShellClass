@@ -3,15 +3,22 @@ using namespace System
 <#
     class Vine
 #>
-class Vine : System.IDisposable
-{
+class Vine : System.IDisposable {
     <#
         Public Properties
     #>
-    [Type]$Type = [object]
+    [type]$Type = [object]
 
     [AllowNull()]
     [object]$Value
+
+    <#
+        Static Public Properties
+    #>
+    static [type]$ClassType   = [Vine].AsType()
+    static [string]$FullName  = [Vine].FullName
+    static [string]$Name      = [Vine].Name
+    static [string]$Namespace = [Vine].Namespace
 
     <#
         Private Properties
@@ -21,55 +28,29 @@ class Vine : System.IDisposable
     <#
         Constructors
     #>
-    Vine()
-    {
-        $constructorHashTable = @{
-            Type = [object]
-            Value = $null
-        }
-
-        $this.Initialize($constructorHashTable)
+    Vine() {
+        $this.Initialize(@{})
     }
 
-    Vine([Type]$Value)
-    {
-        $constructorHashTable = @{
-            Type = $Value.GetType()
-            Value = $Value
-        }
-        
-        $this.Initialize($constructorHashTable)
+    Vine([Type]$Value) {
+        $this.Initialize(@{Type = $Value.GetType(); Value = $Value })
     }
 
-    Vine([object]$Value, [Type]$Type)
-    {
-        $constructorHashTable = @{
-            Type = $Type
-            Value = $Value
-        }
-
-        $this.Initialize($constructorHashTable)
+    Vine([hashtable]$Properties) {
+        $this.Initialize($Properties)
     }
 
-    Vine([hashtable]$properties)
-    {
-        $this.Initialize($properties)
+    Vine([object]$Value, [Type]$Type) {
+        $this.Initialize(@{Type = $Type; Value = $Value })
     }
 
     # Hidden Public method to share code between constructors
-    hidden [void]Initialize([hashtable]$properties)
-    {
-        if (-not $properties.ContainsKey('Type')) {
-            $properties.Add('Type', [type][object])
+    hidden [void]Initialize([hashtable]$Properties) {
+        foreach ($Property in $Properties.Keys) {
+            $this.$Property = $Properties.$Property
         }
-
-        if (-not $properties.ContainsKey('Value')) {
-            $properties.Add('Value', $null)
-        }
-
+    
         $this.Disposed = $false
-        $this.Type     = $properties['Type']
-        $this.Value    = $properties['Value']
     }
 
     <#
@@ -79,7 +60,7 @@ class Vine : System.IDisposable
         $this.Dispose($true)
     }
 
-    # override from here
+    # override this Dispose method to clean up resources
     [void]Dispose([bool]$disposing) {
         if (-not $this.Disposed) {
             if ($disposing) {
@@ -93,26 +74,13 @@ class Vine : System.IDisposable
             $this.Disposed = $true
         }
     }
-
-    <#
-        Static Methods
-    #>
-    static [void]Swap([Vine]$First, [Vine]$Second)
-    {
-        $swapValue = $First.Value
-
-        $First.Emplace($Second.Value)
-        $Second.Emplace($swapValue)
-    }
 }
 
 <#
     Initialization Script
 #>
 # Define the types to export with type accelerators.
-$ExportableTypes =@(
-    [Vine]
-)
+[type[]]$ExportableTypes =@([Vine])
 
 # Get the internal TypeAccelerators class to use its static methods.
 $TypeAcceleratorsClass = [psobject].Assembly.GetType(
@@ -122,30 +90,35 @@ $TypeAcceleratorsClass = [psobject].Assembly.GetType(
 # Ensure none of the types would clobber an existing type accelerator.
 # If a type accelerator with the same name exists, throw an exception.
 $ExistingTypeAccelerators = $TypeAcceleratorsClass::Get
-foreach ($Type in $ExportableTypes) {
+
+$ExportableTypes | ForEach-Object -Process {
+    $Type = $_
+
     if ($Type.FullName -in $ExistingTypeAccelerators.Keys) {
         $Message = @(
             "Unable to register type accelerator '$($Type.FullName)'"
             'Accelerator already exists.'
-        ) -join ' - '
+        ) -join ' : '
 
-throw [System.Management.Automation.ErrorRecord]::new(
+        throw [System.Management.Automation.ErrorRecord]::new(
             [System.InvalidOperationException]::new($Message),
-            'TypeAcceleratorAlreadyExists',
-            [System.Management.Automation.ErrorCategory]::InvalidOperation,
+            'Vine-ResourceUnavailable-01',
+            'InvalidOperation',
             $Type.FullName
         )
     }
 }
 
 # Add type accelerators for every exportable type.
-foreach ($Type in $ExportableTypes) {
+$ExportableTypes | ForEach-Object -Process {
+    $Type = $_
     $TypeAcceleratorsClass::Add($Type.FullName, $Type)
 }
 
 # Remove type accelerators when the module is removed.
 $MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
-    foreach($Type in $ExportableTypes) {
+    $ExportableTypes | ForEach-Object -Process {
+        $Type = $_
         $TypeAcceleratorsClass::Remove($Type.FullName)
     }
 }.GetNewClosure()
@@ -191,6 +164,9 @@ function New-Vine {
 
         .DESCRIPTION
         `New-Vine` Creates a new instance of the Vine class.
+
+        .PARAMETER InvocationInfo
+        Specifies the invocation information for the cmdlet for registering the type accelerator.
 
         .PARAMETER Value
         Specifies the value to use for the new instance.  May be null.

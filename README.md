@@ -53,7 +53,6 @@ Refinements to:
 Refinements to:
 
 * add support for registering a TypeAccelerator
-* static [void]Swap([Vine], [Vine]) method
 
 ## Vine-3
 
@@ -72,6 +71,7 @@ Refinement to:
 * [void]Emplace([object]) method
 * [void]Emplace([object], [Type])
 * [void]Emplace([Vine])
+* static [void]Swap([Vine], [Vine]) method
 
 ## Vine-5
 
