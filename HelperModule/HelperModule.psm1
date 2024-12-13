@@ -1,4 +1,870 @@
 <#
+    ConvertTo-Boolean
+#>
+function ConvertTo-Boolean {
+    [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingBoolean')]
+        [bool]
+        $Boolean,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingByte')]
+        [byte]
+        $Byte,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingDecimal')]
+        [decimal]
+        $Decimal,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingDouble')]
+        [double]
+        $Double,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingFloat')]
+        [float]
+        $Float,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingInt')]
+        [int]
+        $Integer,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLong')]
+        [long]
+        $Long,
+
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingObject')]
+        [AllowNull()]
+        [object]
+        $InputObject,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingShort')]
+        [short]
+        $Short,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingSignedByte')]
+        [sbyte]
+        $SignedByte,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingUnsignedInteger')]
+        [uint]
+        $UnsignedInteger,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingUnsignedLong')]
+        [ulong]
+        $UnsignedLong,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingUnsignedShort')]
+        [ushort]
+        $UnsignedShort,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingString')]
+        [AllowNull()]
+        [AllowEmptyString()]
+        [string]
+        $Value,
+
+        [AllowNull()]
+        [cultureinfo]
+        $Culture = $null
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+        if (-not $PSBoundParameters.ContainsKey('Culture') -or ($null -eq $Culture)) {
+            $Culture = [cultureinfo]::InvariantCulture
+        }
+    }
+
+    PROCESS {
+        switch ($PSCmdlet.ParameterSetName) {
+            'UsingBoolean' {
+                $Boolean | ForEach-Object -Process { [System.Convert]::ToBoolean($_) } | Write-Output
+                break
+            }
+
+            'UsingByte' {
+                $Byte | ForEach-Object -Process { [System.Convert]::ToBoolean($_) } | Write-Output
+                break
+            }
+
+            'UsingDecimal' {
+                $Decimal | ForEach-Object -Process { [System.Convert]::ToBoolean($_) } | Write-Output
+                break
+            }
+
+            'UsingDouble' {
+                $Double | ForEach-Object -Process { [System.Convert]::ToBoolean($_) } | Write-Output
+                break
+            }
+
+            'UsingFloat' {
+                $Float | ForEach-Object -Process { [System.Convert]::ToBoolean($_) } | Write-Output
+                break
+            }
+
+            'UsingInt' {
+                $Integer | ForEach-Object -Process { [System.Convert]::ToBoolean($_) } | Write-Output
+                break
+            }
+
+            'UsingLong' {
+                $Long | ForEach-Object -Process { [System.Convert]::ToBoolean($_) } | Write-Output
+                break
+            }
+
+            'UsingShort' {
+                $Short | ForEach-Object -Process { [System.Convert]::ToBoolean($_) } | Write-Output
+                break
+            }
+
+            'UsingSignedByte' {
+                $SignedByte | ForEach-Object -Process { [System.Convert]::ToBoolean($_) } | Write-Output
+                break
+            }
+
+            'UsingString' {
+                $Value | ForEach-Object -Process { [System.Convert]::ToBoolean($_, $Culture) } | Write-Output
+                break
+            }
+
+            'UsingUnsignedInteger' {
+                $UnsignedInteger | ForEach-Object -Process { [System.Convert]::ToBoolean($_) } | Write-Output
+                break
+            }
+
+            'UsingUnsignedLong' {
+                $UnsignedLong | ForEach-Object -Process { [System.Convert]::ToBoolean($_) } | Write-Output
+                break
+            }
+
+            'UsingUnsignedShort' {
+                $UnsignedShort | ForEach-Object -Process { [System.Convert]::ToBoolean($_) } | Write-Output
+                break
+            }
+
+            default {
+                $InputObject | ForEach-Object -Process { [System.Convert]::ToBoolean($_, $Culture) } | Write-Output
+                break
+            }
+        }
+    }
+
+    <#
+        .SYNOPSIS
+        Converts a values, strings, or objects to a boolean value.
+
+        .DESCRIPTION
+        The `ConvertTo-Boolean` function converts a values, strings, or objects to a boolean value.
+
+        .PARAMETER Boolean
+        Specifies the boolean value to convert.
+
+        .PARAMETER Byte
+        Specifies the byte value to convert.
+
+        .PARAMETER Decimal
+        Specifies the decimal value to convert.
+
+        .PARAMETER Double
+        Specifies the double value to convert.
+
+        .PARAMETER Float
+        Specifies the float value to convert.
+
+        .PARAMETER Integer
+        Specifies the integer value to convert.
+
+        .PARAMETER Long
+        Specifies the long value to convert.
+
+        .PARAMETER Short
+        Specifies the short value to convert.
+
+        .PARAMETER SignedByte
+        Specifies the signed byte value to convert.
+
+        .PARAMETER UnsignedInteger
+        Specifies the unsigned integer value to convert.
+
+        .PARAMETER UnsignedLong
+        Specifies the unsigned long value to convert.
+
+        .PARAMETER UnsignedShort
+        Specifies the unsigned short value to convert.
+
+        .PARAMETER InputObject
+        Specifies the object to convert.
+
+        .PARAMETER Value
+        Specifies the string value to convert.
+
+        .INPUTS
+        [object]  `ConvertTo-Boolean` accepts an object by value or by property name for the 'InputObject' parameter from the PowerShell pipeline.
+
+        [bool]  `ConvertTo-Boolean` accepts a boolean value for the 'Boolean' parameter from the PowerShell pipeline.
+        [byte]  `ConvertTo-Boolean` accepts a byte value for the 'Byte' parameter from the PowerShell pipeline.
+        [decimal]  `ConvertTo-Boolean` accepts a decimal value for the 'Decimal' parameter from the PowerShell pipeline.
+        [double]  `ConvertTo-Boolean` accepts a double value for the 'Double' parameter from the PowerShell pipeline.
+        [float]  `ConvertTo-Boolean` accepts a float value for the 'Float' parameter from the PowerShell pipeline.
+        [int]  `ConvertTo-Boolean` accepts an integer value for the 'Integer' parameter from the PowerShell pipeline.
+        [long]  `ConvertTo-Boolean` accepts a long value for the 'Long' parameter from the PowerShell pipeline.
+        [sbyte]  `ConvertTo-Boolean` accepts a signed byte value for the 'SignedByte' parameter from the PowerShell pipeline.
+        [short]  `ConvertTo-Boolean` accepts a short value for the 'Short' parameter from the PowerShell pipeline.
+        [string]  `ConvertTo-Boolean` accepts a string value for the 'Value' parameter from the PowerShell pipeline.
+        [uint]  `ConvertTo-Boolean` accepts an unsigned integer value for the 'UnsignedInteger' parameter from the PowerShell pipeline.
+        [ulong]  `ConvertTo-Boolean` accepts an unsigned long value for the 'UnsignedLong' parameter from the PowerShell pipeline.
+        [ushort]  `ConvertTo-Boolean` accepts an unsigned short value for the 'UnsignedShort' parameter from the PowerShell pipeline.
+
+        .OUTPUTS
+        [bool]  `ConvertTo-Boolean` returns a boolean value to the PowerShell pipeline.
+
+        .EXAMPLE
+        PS> $Value = 'True'
+        PS> ConvertTo-Boolean -Value $Value
+        
+        True
+
+        Converted the string to a boolean value.  Returned the boolean value.
+
+        .NOTES
+        Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
+
+        .LINK
+        about_CommonParameters
+
+        .LINK
+        about_Advanced_FUnctions
+
+        .LINK
+        Set-StrictMode
+
+        .LINK
+        Set-Variable
+    #>
+}
+
+<#
+    ConvertTo-Byte
+#>
+function ConvertTo-Byte {
+    [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
+    [OutputType([byte])]
+    param (
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingBoolean')]
+        [bool]
+        $Boolean,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingByte')]
+        [byte]
+        $Byte,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingDecimal')]
+        [decimal]
+        $Decimal,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingDouble')]
+        [double]
+        $Double,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingFloat')]
+        [float]
+        $Float,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingInt')]
+        [int]
+        $Integer,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLong')]
+        [long]
+        $Long,
+
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingObject')]
+        [AllowNull()]
+        [object]
+        $InputObject,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingShort')]
+        [short]
+        $Short,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingSignedByte')]
+        [sbyte]
+        $SignedByte,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingUnsignedInteger')]
+        [uint]
+        $UnsignedInteger,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingUnsignedLong')]
+        [ulong]
+        $UnsignedLong,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingUnsignedShort')]
+        [ushort]
+        $UnsignedShort,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingString')]
+        [AllowNull()]
+        [AllowEmptyString()]
+        [string]
+        $Value,
+
+        [AllowNull()]
+        [cultureinfo]
+        $Culture = $null
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+        if (-not $PSBoundParameters.ContainsKey('Culture') -or ($null -eq $Culture)) {
+            $Culture = [cultureinfo]::InvariantCulture
+        }
+    }
+
+    PROCESS {
+        switch ($PSCmdlet.ParameterSetName) {
+            'UsingBoolean' {
+                $Boolean | ForEach-Object -Process { [System.Convert]::ToByte($_) } | Write-Output
+                break
+            }
+
+            'UsingByte' {
+                $Byte | ForEach-Object -Process { [System.Convert]::ToByte($_) } | Write-Output
+                break
+            }
+
+            'UsingChar' {
+                $Character | ForEach-Object -Process { [System.Convert]::ToByte($_) } | Write-Output
+                break
+            }
+
+            'UsingDecimal' {
+                $Decimal | ForEach-Object -Process { [System.Convert]::ToByte($_) } | Write-Output
+                break
+            }
+
+            'UsingDouble' {
+                $Double | ForEach-Object -Process { [System.Convert]::ToByte($_) } | Write-Output
+                break
+            }
+
+            'UsingFloat' {
+                $Float | ForEach-Object -Process { [System.Convert]::ToByte($_) } | Write-Output
+                break
+            }
+
+            'UsingInt' {
+                $Integer | ForEach-Object -Process { [System.Convert]::ToByte($_) } | Write-Output
+                break
+            }
+
+            'UsingLong' {
+                $Long | ForEach-Object -Process { [System.Convert]::ToByte($_) } | Write-Output
+                break
+            }
+
+            'UsingShort' {
+                $Short | ForEach-Object -Process { [System.Convert]::ToByte($_) } | Write-Output
+                break
+            }
+
+            'UsingSignedByte' {
+                $SignedByte | ForEach-Object -Process { [System.Convert]::ToByte($_) } | Write-Output
+                break
+            }
+
+            'UsingSignedByte' {
+                $SignedByte | ForEach-Object -Process { [System.Convert]::ToByte($_) } | Write-Output
+                break
+            }
+
+            'UsingString' {
+                $Value | ForEach-Object -Process { [System.Convert]::ToByte($_, $Culture) } | Write-Output
+                break
+            }
+
+            'UsingUnsignedLong' {
+                $UnsignedLong | ForEach-Object -Process { [System.Convert]::ToByte($_) } | Write-Output
+                break
+            }
+
+            'UsingUnsignedShort' {
+                $UnsignedShort | ForEach-Object -Process { [System.Convert]::ToByte($_) } | Write-Output
+                break
+            }
+
+            default {
+                $InputObject | ForEach-Object -Process { [System.Convert]::ToByte($_, $Culture) } | Write-Output
+                break
+            }
+        }
+    }
+
+    <#
+        .SYNOPSIS
+        Converts a values, strings, or objects to an unsigned byte value.
+
+        .DESCRIPTION
+        The `ConvertTo-Boolean` function converts a values, strings, or objects to an unsigned byte value.
+
+        .PARAMETER Boolean
+        Specifies the boolean value to convert.
+
+        .PARAMETER Byte
+        Specifies the byte value to convert.
+
+        .PARAMETER Character
+        Specifies the character value to convert.
+
+        .PARAMETER Decimal
+        Specifies the decimal value to convert.
+
+        .PARAMETER Double
+        Specifies the double value to convert.
+
+        .PARAMETER Float
+        Specifies the float value to convert.
+
+        .PARAMETER Integer
+        Specifies the integer value to convert.
+
+        .PARAMETER Long
+        Specifies the long value to convert.
+
+        .PARAMETER Short
+        Specifies the short value to convert.
+
+        .PARAMETER SignedByte
+        Specifies the signed byte value to convert.
+
+        .PARAMETER UnsignedInteger
+        Specifies the unsigned integer value to convert.
+
+        .PARAMETER UnsignedLong
+        Specifies the unsigned long value to convert.
+
+        .PARAMETER UnsignedShort
+        Specifies the unsigned short value to convert.
+
+        .PARAMETER InputObject
+        Specifies the object to convert.
+
+        .PARAMETER Value
+        Specifies the string value to convert.
+
+        .INPUTS
+        [object]  `ConvertTo-Byte` accepts an object by value or by property name for the 'InputObject' parameter from the PowerShell pipeline.
+
+        [bool]  `ConvertTo-Byte` accepts a boolean value for the 'Boolean' parameter from the PowerShell pipeline.
+        [byte]  `ConvertTo-Byte` accepts a byte value for the 'Byte' parameter from the PowerShell pipeline.
+        [char]  `ConvertTo-Byte` accepts a character value for the 'Character' parameter from the PowerShell pipeline.
+        [decimal]  `ConvertTo-Byte` accepts a decimal value for the 'Decimal' parameter from the PowerShell pipeline.
+        [double]  `ConvertTo-Byte` accepts a double value for the 'Double' parameter from the PowerShell pipeline.
+        [float]  `ConvertTo-Byte` accepts a float value for the 'Float' parameter from the PowerShell pipeline.
+        [int]  `ConvertTo-Byte` accepts an integer value for the 'Integer' parameter from the PowerShell pipeline.
+        [long]  `ConvertTo-Byte` accepts a long value for the 'Long' parameter from the PowerShell pipeline.
+        [sbyte]  `ConvertTo-Byte` accepts a signed byte value for the 'SignedByte' parameter from the PowerShell pipeline.
+        [short]  `ConvertTo-Byte` accepts a short value for the 'Short' parameter from the PowerShell pipeline.
+        [string]  `ConvertTo-Byte` accepts a string value for the 'Value' parameter from the PowerShell pipeline.
+        [uint]  `ConvertTo-Byte` accepts an unsigned integer value for the 'UnsignedInteger' parameter from the PowerShell pipeline.
+        [ulong]  `ConvertTo-Byte` accepts an unsigned long value for the 'UnsignedLong' parameter from the PowerShell pipeline.
+        [ushort]  `ConvertTo-Byte` accepts an unsigned short value for the 'UnsignedShort' parameter from the PowerShell pipeline.
+
+        .OUTPUTS
+        [byte]  `ConvertTo-Byte` returns a byte value to the PowerShell pipeline.
+
+        .EXAMPLE
+        PS> $Value = 'FF'
+        PS> ConvertTo-Byte -Value $Value
+
+        255
+
+        Converted the string to a byte value.  Returned the byte value.
+
+        .NOTES
+        Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
+
+        .LINK
+        about_CommonParameters
+
+        .LINK
+        about_Advanced_FUnctions
+
+        .LINK
+        Set-StrictMode
+
+        .LINK
+        Set-Variable
+    #>
+}
+
+<#
+    ConvertTo-Char
+#>
+function ConvertTo-Char {
+    [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
+    [OutputType([char])]
+    param (
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingByte')]
+        [byte]
+        $Byte,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingChar')]
+        [char]
+        $Character,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingInt')]
+        [int]
+        $Integer,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLong')]
+        [long]
+        $Long,
+
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingObject')]
+        [AllowNull()]
+        [object]
+        $InputObject,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingShort')]
+        [short]
+        $Short,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingSignedByte')]
+        [sbyte]
+        $SignedByte,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingUnsignedInteger')]
+        [uint]
+        $UnsignedInteger,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingUnsignedLong')]
+        [ulong]
+        $UnsignedLong,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingUnsignedShort')]
+        [ushort]
+        $UnsignedShort,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
+        [AllowNull()]
+        [AllowEmptyString()]
+        [string]
+        $Value,
+
+        [AllowNull()]
+        [cultureinfo]
+        $Culture = $null
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+        if (-not $PSBoundParameters.ContainsKey('Culture') -or ($null -eq $Culture)) {
+            $Culture = [cultureinfo]::InvariantCulture
+        }
+    }
+
+    PROCESS {
+        switch ($PSCmdlet.ParameterSetName) {
+            'UsingBoolean' {
+                $Boolean | ForEach-Object -Process { [System.Convert]::ToChar($_) } | Write-Output
+                break
+            }
+
+            'UsingByte' {
+                $Byte | ForEach-Object -Process { [System.Convert]::ToChar($_) } | Write-Output
+                break
+            }
+
+            'UsingChar' {
+                $Character | ForEach-Object -Process { [System.Convert]::ToChar($_) } | Write-Output
+                break
+            }
+
+            'UsingInt' {
+                $Integer | ForEach-Object -Process { [System.Convert]::ToChar($_) } | Write-Output
+                break
+            }
+
+            'UsingLong' {
+                $Long | ForEach-Object -Process { [System.Convert]::ToChar($_) } | Write-Output
+                break
+            }
+
+            'UsingShort' {
+                $Short | ForEach-Object -Process { [System.Convert]::ToChar($_) } | Write-Output
+                break
+            }
+
+            'UsingSignedByte' {
+                $SignedByte | ForEach-Object -Process { [System.Convert]::ToChar($_) } | Write-Output
+                break
+            }
+
+            'UsingUnsignedInteger' {
+                $UnsignedInteger | ForEach-Object -Process { [System.Convert]::ToChar($_) } | Write-Output
+                break
+            }
+
+            'UsingUnsignedLong' {
+                $UnsignedLong | ForEach-Object -Process { [System.Convert]::ToChar($_) } | Write-Output
+                break
+            }
+
+            'UsingUnsignedShort' {
+                $UnsignedShort | ForEach-Object -Process { [System.Convert]::ToChar($_) } | Write-Output
+                break
+            }
+
+            default {
+                $InputObject | ForEach-Object -Process { [System.Convert]::ToChar($_, $Culture) } | Write-Output
+                break
+            }
+        }
+    }
+
+    <#
+        .SYNOPSIS
+        Converts a values, strings, or objects to a char value.
+
+        .DESCRIPTION
+        The `ConvertTo-Char` function converts a values, strings, or objects to a char value.
+
+        .PARAMETER Boolean
+        Specifies the boolean value to convert.
+
+        .PARAMETER Byte
+        Specifies the byte value to convert.
+
+        .PARAMETER Character
+        Specifies the character value to convert.
+
+        .PARAMETER Integer
+        Specifies the integer value to convert.
+
+        .PARAMETER Long
+        Specifies the long value to convert.
+
+        .PARAMETER Short
+        Specifies the short value to convert.
+
+        .PARAMETER SignedByte
+        Specifies the signed byte value to convert.
+
+        .PARAMETER UnsignedInteger
+        Specifies the unsigned integer value to convert.
+
+        .PARAMETER UnsignedLong
+        Specifies the unsigned long value to convert.
+
+        .PARAMETER UnsignedShort
+        Specifies the unsigned short value to convert.
+
+        .PARAMETER InputObject
+        Specifies the object to convert.
+
+        .PARAMETER Value
+        Specifies the string value to convert.
+
+        .INPUTS
+        [object]  `ConvertTo-Char` accepts an object by value or by property name for the 'InputObject' parameter from the PowerShell pipeline.
+
+        [bool]  `ConvertTo-Char` accepts a boolean value for the 'Boolean' parameter from the PowerShell pipeline.
+        [byte]  `ConvertTo-Char` accepts a byte value for the 'Byte' parameter from the PowerShell pipeline.
+        [char]  `ConvertTo-Char` accepts a character value for the 'Character' parameter from the PowerShell pipeline.
+        [decimal]  `ConvertTo-Char` accepts a decimal value for the 'Decimal' parameter from the PowerShell pipeline.
+        [double]  `ConvertTo-Char` accepts a double value for the 'Double' parameter from the PowerShell pipeline.
+        [float]  `ConvertTo-Char` accepts a float value for the 'Float' parameter from the PowerShell pipeline.
+        [int]  `ConvertTo-Char` accepts an integer value for the 'Integer' parameter from the PowerShell pipeline.
+        [long]  `ConvertTo-Char` accepts a long value for the 'Long' parameter from the PowerShell pipeline.
+        [sbyte]  `ConvertTo-Char` accepts a signed byte value for the 'SignedByte' parameter from the PowerShell pipeline.
+        [short]  `ConvertTo-Char` accepts a short value for the 'Short' parameter from the PowerShell pipeline.
+        [string]  `ConvertTo-Char` accepts a string value for the 'Value' parameter from the PowerShell pipeline.
+        [uint]  `ConvertTo-Char` accepts an unsigned integer value for the 'UnsignedInteger' parameter from the PowerShell pipeline.
+        [ulong]  `ConvertTo-Char` accepts an unsigned long value for the 'UnsignedLong' parameter from the PowerShell pipeline.
+        [ushort]  `ConvertTo-Char` accepts an unsigned short value for the 'UnsignedShort' parameter from the PowerShell pipeline.
+
+        .OUTPUTS
+        [char]  `ConvertTo-Char` returns a char value to the PowerShell pipeline.
+
+        .EXAMPLE
+        PS> $Value = 'e'
+        PS> ConvertTo-Char -Value $Value
+        
+        e
+
+        Converted the string to a char value.  Returned the char value.
+
+        .NOTES
+        Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
+
+        .LINK
+        about_CommonParameters
+
+        .LINK
+        about_Advanced_FUnctions
+
+        .LINK
+        Set-StrictMode
+
+        .LINK
+        Set-Variable
+    #>
+}
+
+<#
+    ConvertTo-DateTime
+#>
+function ConvertTo-DateTime {
+    [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
+    [OutputType([datetime])]
+    param (
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingDataTime')]
+        [datetime]
+        $DateTime,
+
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingObject')]
+        [AllowNull()]
+        [object]
+        $InputObject,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
+        [AllowNull()]
+        [AllowEmptyString()]
+        [string]
+        $Value,
+
+        [AllowNull()]
+        [cultureinfo]
+        $Culture = $null
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+        if (-not $PSBoundParameters.ContainsKey('Culture') -or ($null -eq $Culture)) {
+            $Culture = [cultureinfo]::InvariantCulture
+        }
+    }
+
+    PROCESS {
+        switch ($PSCmdlet.ParameterSetName) {
+            'UsingDataTime' {
+                $DateTime | ForEach-Object -Process { [System.Convert]::ToDateTime($_) } | Write-Output
+                break
+            }
+
+            'UsingString' {
+                $Value | ForEach-Object -Process { [System.Convert]::ToDateTime($_, $Culture) } | Write-Output
+                break
+            }
+
+            default {
+                $InputObject | ForEach-Object -Process { [System.Convert]::ToDateTime($_, $Culture) } | Write-Output
+                break
+            }
+        }
+    }
+
+    <#
+        .SYNOPSIS
+        Converts values, strings, or objects to a DateTime value.
+
+        .DESCRIPTION
+        The `ConvertTo-DateTime` function converts values, strings, or objects to a DateTime value.
+
+        .PARAMETER DateTime
+        Specifies the date time value to convert.
+
+        .PARAMETER InputObject
+        Specifies the object to convert.
+
+        .PARAMETER Value
+        Specifies the string value to convert.
+
+        .INPUTS
+        [object]  `ConvertTo-DateTime` accepts an object by value or by property name for the 'InputObject' parameter from the PowerShell pipeline.
+
+        [datetime]  `ConvertTo-DateTime` accepts a DateTime value for the 'DateTime' parameter from the PowerShell pipeline.
+        [string]  `ConvertTo-Byte` accepts a string value for the 'Value' parameter from the PowerShell pipeline.
+
+        .OUTPUTS
+        [datetime]  `ConvertTo-Boolean` returns a boolean value to the PowerShell pipeline.
+
+        .EXAMPLE
+        PS> $Value = '2024-01-01'
+        PS> ConvertTo-Boolean -Value $Value
+        
+        Monday, January 1, 2024 12:00:00 AM
+
+        Converted the string to a DateTime value.  Returned the DateTime value.
+
+        .NOTES
+        Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
+
+        .LINK
+        about_CommonParameters
+
+        .LINK
+        about_Advanced_FUnctions
+
+        .LINK
+        Set-StrictMode
+
+        .LINK
+        Set-Variable
+    #>
+}
+
+<#
+    ConvertTo-Decimal
+#>
+
+<#
+    ConvertTo-Double
+#>
+
+<#
+    ConvertTo-Float
+#>
+
+<#
+    ConverTo-Integer
+#>
+
+<#
+    ConvertTo-Long
+#>
+
+<#
+    ConvertTo-Short
+#>
+
+<#
+    ConvertTo-SignedByte
+#>
+
+<#
+    ConvertTo-UnsignedInteger
+#>
+
+<#
+    ConvertTo-UnsignedLong
+#>
+
+<#
+    ConvertTo-UnsignedShort
+#>
+
+<#
     ConvertFrom-Type
 #>
 function ConvertFrom-Type {
@@ -383,7 +1249,8 @@ function Test-HasMember {
                 Write-Error -Message $message -Exception $ex -Category InvalidArgument -TargetObject $Object -ErrorAction Continue
 
                 throw $ex
-            } else {
+            }
+            else {
                 Write-Warning -Message $message
                 $false | Write-Output
             }
@@ -500,7 +1367,8 @@ function Test-HasMethod {
                 Write-Error -Message $message -Exception $ex -Category InvalidArgument -TargetObject $Object -ErrorAction Continue
 
                 throw $ex
-            } else {
+            }
+            else {
                 Write-Warning -Message $message
                 $false | Write-Output
             }
@@ -617,7 +1485,8 @@ function Test-HasProperty {
                 Write-Error -Message $message -Exception $ex -Category InvalidArgument -TargetObject $Object -ErrorAction Continue
 
                 throw $ex
-            } else {
+            }
+            else {
                 Write-Warning -Message $message
                 $false | Write-Output
             }
@@ -726,14 +1595,15 @@ function Test-ModuleProperty {
 
     PROCESS {
         $Result = $Path | Resolve-Path |
-            Test-ModuleManifest |
-                Select-Object -Property $Property |
-                    Measure-Object -Property $Property |
-                        Where-Object -Property Count -GT 0
+        Test-ModuleManifest |
+        Select-Object -Property $Property |
+        Measure-Object -Property $Property |
+        Where-Object -Property Count -GT 0
 
         if ($Result) {
             $true | Write-Output
-        } else {
+        }
+        else {
             $false | Write-Output
         }
     }
