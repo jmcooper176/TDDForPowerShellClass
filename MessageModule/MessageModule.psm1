@@ -1,6 +1,84 @@
 #requires -Version 7.2
 
 <#
+    Add-SeparatorIfNotNullOrEmpty
+#>
+function Add-SeparatorIfNotNullOrEmpty {
+    [CmdletBinding()]
+    [OutputType([stringbuilder])]
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [stringbuilder]
+        $Buffer,
+
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $Separator = ' : '
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if (($null -eq $Buffer) -or ($Buffer.Length -le 0)) {
+            $Buffer | Write-Output
+        }
+        else {
+            $Buffer.Append($Separator) | Write-Output
+        }
+    }
+
+    <#
+        .SYNOPSIS
+        Adds a separator to a string builder if the string builder is not null or empty.
+
+        .DESCRIPTION
+        The `Add-SeparatorIfNotNullOrEmpty` function adds a separator to a string builder if the string builder is not null or empty.
+
+        .PARAMETER Buffer
+        The string builder to which to add the separator.
+
+        .PARAMETER Separator
+        The separator to add to the string builder.
+
+        .INPUTS
+        [stringbuilder]  You can pipe a string builder to `Add-SeparatorIfNotNullOrEmpty`.
+
+        .OUTPUTS
+        [stringbuilder]  The function returns a string builder to the PowerShell pipeline.
+
+        .EXAMPLE
+        PS> $buffer = [System.Text.StringBuilder]::new()
+        PS> $buffer.Append('Hello, World!') | Add-SeparatorIfNotNullOrEmpty -Separator ' : ' | Write-Output
+
+        Hello, World!: 
+        
+        Adds a separator to the string builder 'Hello, World!'.
+
+        .NOTES
+        Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
+
+        .LINK
+        about_CommonParameters
+
+        .LINK
+        about_Functions_Advanced
+
+        .LINK
+        Set-StrictMode
+
+        .LINK
+        Set-Variable
+
+        .LINK
+        Write-Output
+    #>
+}
+
+<#
     Format-Error
 #>
 function Format-Error {
@@ -389,34 +467,20 @@ function Format-Message {
     }
 
     PROCESS {
-        $Line = $InvocationINfo.ScriptLineNumber
-        $Column = $InvocationInfo.OffsetInLine
-        $Path = $InvocationInfo.PSCommandPath
-        $Caller = $InvocationInfo.MyCommand.Name
-
-        if ($Timestamp.IsPresent -and $AsLocal.IsPresent) {
-            $time = Get-Date -Format 's'
-        }
-        elseif ($Timestamp.IsPresent) {
-            $time = Get-Date -AsUTC -Format 's'
+        $formatOriginSplat = @{
+            InvocationInfo = $InvocationInfo
+            Separator      = $Separator
+            AsLocal        = $AsLocal.IsPresent
+            Timestamp      = $Timestamp.IsPresent
+            UseCaller      = $UseCaller.IsPresent
         }
 
-        if ($Timestamp.IsPresent) {
-            $buffer.Append($('[{0}] ' -f $time))
-        }
-
-        if ($UseCaller.IsPresent) {
-            $origin = ('{0}({1},{2})' -f $Caller, $Line, $Column)
-        }
-        else {
-            $origin = ('{0}({1},{2})' -f $Path, $Line, $Column)
-        }
-
-        $buffer.Append($origin).Append($Separator) | Out-Null
+        $origin = Format-Origin @formatOriginSplat
+        $buffer.Append($origin) | Add-SeparatorIfNotNullOrEmpty -Separator $Separator
 
         if ($PSBoundParameters.ContainsKey('Metadata')) {
-            $tag = $Metadata -join ' '
-            $buffer.Append($tag).Append($Separator) | Out-Null
+            $metaString = Format-Metadata -Metadata $Metadata
+            $buffer.Append($metaString) | Add-SeparatorIfNotNullOrEmpty -Separator $Separator
         }
 
         $Content | ForEach-Object -Process {
@@ -480,6 +544,143 @@ function Format-Message {
 
         .LINK
         ForEach-Object
+
+        .LINK
+        Format-Metadata
+
+        .LINK
+        Format-Origin
+
+        .LINK
+        Set-StrictMode
+
+        .LINK
+        Set-Variable
+
+        .LINK
+        Write-Output
+    #>
+}
+
+<#
+    Format-Metadata
+#>
+function Format-Metadata {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [string[]]
+        $Metadata,
+
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $Separator = ' '
+    )
+
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+    $Metadata -join $Separator | Write-Output
+}
+
+<#
+    Format-Origin
+#>
+function Format-Origin {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [invocationinfo]
+        $InvocationInfo,
+
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $Separator = ' : ',
+
+        [switch]
+        $AsLocal,
+
+        [switch]
+        $Timestamp,
+
+        [switch]
+        $UseCaller
+    )
+
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+    $Line = $InvocationINfo.ScriptLineNumber
+    $Column = $InvocationInfo.OffsetInLine
+    $Path = $InvocationInfo.PSCommandPath
+    $Caller = $InvocationInfo.MyCommand.Name
+
+    if ($Timestamp.IsPresent -and $AsLocal.IsPresent) {
+        $time = Get-Date -Format 's'
+    }
+    elseif ($Timestamp.IsPresent) {
+        $time = Get-Date -AsUTC -Format 's'
+    }
+
+    if ($Timestamp.IsPresent -and $UseCaller.IsPresent) {
+        ('[{0}]{1}({2},{3})' -f $time, $Caller, $Line, $Column) | Write-Output
+    }
+    elseif ($UseCaller.IsPresent) {
+        ('{0}({1},{2})' -f $Caller, $Line, $Column) | Write-Output
+    }
+    elseif ($Timestamp.IsPresent) {
+        ('[{0}]{1}({2},{3})' -f $time, $Path, $Line, $Column) | Write-Output
+    }
+    else {
+        ('{0}({1},{2})' -f $Path, $Line, $Column) | Write-Output
+    }
+
+    <#
+        .SYNOPSIS
+        Formats the origin of a message.
+
+        .DESCRIPTION
+        The `Format-Origin` function formats the origin of a message.
+
+        .PARAMETER InvocationInfo
+        The invocation information for the origin.
+
+        .PARAMETER Separator
+        The separator to use between the message and the metadata.
+
+        .PARAMETER AsLocal
+        Indicates that the timestamp should be formatted as a local time.
+
+        .PARAMETER Timestamp
+        Indicates that a timestamp should be included in the message.
+
+        .PARAMETER UseCaller
+        Indicates that the caller should be used as the origin of the message.  The default is to use the script path.
+
+        .INPUTS
+        None.  You cannot pipe input to `Format-Origin`.
+
+        .OUTPUTS
+        [string]  The function returns a string message to the PowerShell pipeline.
+
+        .EXAMPLE
+        PS> Format-Origin -InvocationInfo $MyInvocation | Write-Output
+
+        C: \Users\John\Documents\HelloWorld.ps1(42,1)
+
+        Formats the origin of a message at line 42, column 1 in the script 'HelloWorld.ps1'.
+
+        .NOTES
+        Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
+
+        .LINK
+        about_CommonParameters
+
+        .LINK
+        about_Functions_Advanced
+
+        .LINK
+        Get-Date
 
         .LINK
         Set-StrictMode
@@ -655,16 +856,37 @@ function New-ErrorRecord {
     Write-DebugIf
 #>
 function Write-DebugIf {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'UsingCondition')]
     param (
         [Parameter(Mandatory, ParameterSetName = 'UsingCondition')]
         [bool]
         $Condition,
 
+        [Parameter(Mandatory)]
+        [invocationinfo]
+        $InvocationInfo,
+
         [Parameter(Mandatory, ValueFromPioeline, ValueFromPipelineByPropertyName)]
         [ValidateNotNullOrEmpty()]
         [string]
-        $Message
+        $Message,
+
+        [Parameter(ParameterSetName = 'UsingScriptBlock')]
+        [scriptblock]
+        $ScriptBlock,
+
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $Separator = ' : ',
+
+        [switch]
+        $AsLocal,
+
+        [switch]
+        $Timestamp,
+
+        [switch]
+        $UseCaller
     )
 
     BEGIN {
@@ -673,7 +895,12 @@ function Write-DebugIf {
     }
 
     PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingScriptBlock') {
+            $Condition = & $ScriptBlock
+        }
+
         if ($Condition) {
+            $origin = Format-Origin -InvocationInfo $InvocationInfo -Separator $Separator
             Write-Debug -Message $Message
         }
     }
@@ -691,6 +918,9 @@ function Write-DebugIf {
         .PARAMETER Message
         The message to write.
 
+        .PARAMETER ScriptBlock
+        The script block to evaluate.  If the script block returns `$true`, the message is written.
+
         .INPUTS
         None.  You cannot pipe input to `Write-DebugIf`.
 
@@ -703,6 +933,25 @@ function Write-DebugIf {
         Writes a debug message to the PowerShell host.
 
         .NOTES
+        Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
+
+        .LINK
+        about_CommonParameters
+
+        .LINK
+        about_Functions_Advanced
+
+        .LINK
+        Set-StrictMode
+
+        .LINK
+        Set-Variable
+
+        .LINK
+        Write-Debug
+
+        .LINK
+        Write-Output
     #>
 }
 
@@ -748,4 +997,53 @@ function Write-Fatal {
             }
         }
     }
+
+    <#
+        .SYNOPSIS
+        Writes a fatal error message to the PowerShell host and throws as soft or hard terminating error.
+
+        .DESCRIPTION
+        The `Write-Fatal` function writes a fatal error message to the PowerShell host and throws as soft or hard terminating error.
+
+        .PARAMETER ErrorRecord
+        The error record to write.
+
+        .PARAMETER InvocationInfo
+        The invocation information for the the message origin.
+
+        .PARAMETER ThrowHard
+        Indicates that a hard terminating error should be thrown.  The default is to throw a soft terminating error.
+
+        .INPUTS
+        [ErrorRecord]  You can pipe an error record to `Write-Fatal`.
+
+        .OUTPUTS
+        None.  The function does not return any output.
+
+        .EXAMPLE
+        PS> $Error[0] | Write-Fatal -InvocationInfo $MyInvocation
+
+        Writes a fatal error message to the PowerShell host and throws a soft terminating error.
+
+        .NOTES
+        Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
+
+        .LINK
+        about_CommonParameters
+
+        .LINK
+        about_Functions_Advanced
+
+        .LINK
+        Format-Error
+
+        .LINK
+        Set-StrictMode
+
+        .LINK
+        Set-Variable
+
+        .LINK
+        Write-Error
+    #>
 }
