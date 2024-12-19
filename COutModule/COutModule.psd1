@@ -69,10 +69,10 @@ Copyright = '(c) jmcoo. All rights reserved.'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @()
+FunctionsToExport = 'Write-StdOut', 'Write-StdErr'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = @()
+CmdletsToExport = 'Write-StdOut', 'Write-StdErr'
 
 # Variables to export from this module
 VariablesToExport = '*'
@@ -95,16 +95,16 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        # Tags = @()
+        Tags = @()
 
         # A URL to the license for this module.
-        # LicenseUri = ''
+        LicenseUri = 'https://github.com/jmcooper176/TDDForPowerShellClass/LICENSE'
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        ProjectUri = 'https://github.com/jmcooper176/TDDForPowerShellClass'
 
         # A URL to an icon representing this module.
-        # IconUri = ''
+        IconUri = 'https://github.com/jmcooper176/TDDForPowerShellClass/vine.ico'
 
         # ReleaseNotes of this module
         # ReleaseNotes = ''

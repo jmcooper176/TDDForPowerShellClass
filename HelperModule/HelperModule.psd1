@@ -69,13 +69,13 @@ PowerShellVersion = '5.1'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'ConvertFrom-Type', 'ConvertTo-Type',
+FunctionsToExport = 
     'Select-ModuleByFilter', 'Select-ModuleByProperty',
     'Test-HasMember', 'Test-HasMethod', 'Test-HasProperty',
     'Test-ModuleProperty'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = 'ConvertFrom-Type', 'ConvertTo-Type',
+CmdletsToExport = 
     'Select-ModuleByFilter', 'Select-ModuleByProperty',
     'Test-HasMember', 'Test-HasMethod', 'Test-HasProperty',
     'Test-ModuleProperty'
@@ -110,7 +110,7 @@ PrivateData = @{
         ProjectUri = 'https://github.com/jmcooper176/TDDForPowerShellClass'
 
         # A URL to an icon representing this module.
-        # IconUri = ''
+        IconUri = 'https://github.com/jmcooper176/TDDForPowerShellClass/vine.ico'
 
         # ReleaseNotes of this module
         # ReleaseNotes = ''
