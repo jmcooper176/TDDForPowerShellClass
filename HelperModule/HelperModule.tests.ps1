@@ -1,6 +1,7 @@
 BeforeAll {
     # Arrange
     $ModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'HelperModule.psd1' -Resolve
+    $ConvertModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\ConvertModule\ConvertModule.psd1' -Resolve
     $TypeAcceleratorPath = Join-Path -Path $PSScriptRoot -ChildPath '..\TypeAccelerator\TypeAccelerator.psd1' -Resolve
     
     # Act
@@ -22,51 +23,77 @@ AfterAll {
     Get-Module -Name 'TypeAccelerator' | Should -BeNull
 }
 
-Describe -Name 'ConvertFrom-Type' {
-    Context -Name 'Exists' {
-        It -Name 'Should exist' -Tag @('Unit', 'Test') {
-            # Arrange
-            $testPathSplat = @{
-                Path = 'Function:\ConvertFrom-Type'
-                PathType = 'Leaf'
-            }
+Describe -Name 'HelperModule' {
+    It 'should have a RootModule of HelperModule.psm1' {
+        # Arrange and Act
+        $RootModule = Test-ModuleManifest -Path '.\HelperModule.psd1' | Select-Object -ExpandProperty 'RootModule'
 
-            # Act and Assert
-            Test-Path @testPathSplat | Should -BeTrue
-        }
+        # Assert
+        $RootModule | Should -Be 'HelperModule.psm1'
     }
 
-    Context -Name 'Convert TypeAccelerators to FullNames' {
-        It -Name 'Should return the FullName of the TypeAccelerator' -Tag @('Unit', 'Test') {
-            # Arrange, Act, and Assert
-            Get-TypeAccelerator -ListAvailable | Select-Object -ExpandProperty Values  | ForEach-Object -Process {
-                ConvertFrom-Type -Type $_ | Should -Be $_.FullName
-            }
-        }
-    }
-}
-
-Describe -Name 'ConvertTo-Type' {
-    Context -Name 'Exists' {
-        It -Name 'Should exist' -Tag @('Unit', 'Test') {
-            # Arrange
-            $testPathSplat = @{
-                Path = 'Function:\ConvertTo-Type'
-                PathType = 'Leaf'
-            }
-
-            # Act and Assert
-            Test-Path @testPathSplat | Should -BeTrue
-        }
+    It 'should have a ModuleVersion of 1.1.0' {
+        # Arrange and Act
+        $ModuleVersion = Test-ModuleManifest -Path '.\HelperModule.psd1' | Select-Object -ExpandProperty 'Version'
+        
+        # Assert
+        $ModuleVersion | Should -Be '1.1.0'
     }
 
-    Context -Name 'Convert FullNames to Types' {
-        It -Name 'Should return the FullName of the TypeAccelerator' -Tag @('Unit', 'Test') {
-            # Arrange, Act, and Assert
-            Get-TypeAccelerator -ListAvailable | Select-Object -ExpandProperty Keys  | ForEach-Object -Process {
-                ConvertTo-Type -TypeName $_ | Should -Be ($_ -as [type])
-            }
-        }
+    It 'should have a GUID of 196e2256-561c-4cdf-87dc-5146720c69c2' {
+        # Arrange and Act
+        $Guid = Test-ModuleManifest -Path '.\HelperModule.psd1' | Select-Object -ExpandProperty 'GUID'
+
+        # Assert
+        $Guid | Should -Be '196e2256-561c-4cdf-87dc-5146720c69c2'
+    }
+
+    It 'should have an Author of John Merryweather Cooper' {
+        # Arrange and Act
+        $Author = Test-ModuleManifest -Path '.\HelperModule.psd1' | Select-Object -ExpandProperty 'Author'
+        
+        # Assert
+        $Author | Should -Be 'John Merryweather Cooper'
+    }
+
+    It 'should have a CompanyName of Ram Tuned Mega Code' {
+        # Arrange and Act
+        $CompanyName = Test-ModuleManifest -Path '.\HelperModule.psd1' | Select-Object -ExpandProperty 'CompanyName'
+        
+        # Assert
+        $CompanyName | Should -Be 'Ram Tuned Mega Code'
+    }
+
+    It 'should have a Copyright of Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.' {
+        # Arrange and Act
+        $Copyright = Test-ModuleManifest -Path '.\HelperModule.psd1' | Select-Object -ExpandProperty 'Copyright'
+        
+        # Assert
+        $Copyright | Should -Be 'Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.'
+    }
+
+    It 'should have a Description of Unit test helper functions for PowerShell.' {
+        # Arrange and Act
+        $Description = Test-ModuleManifest -Path '.\HelperModule.psd1' | Select-Object -ExpandProperty 'Description'
+
+        # Assert
+        $Description | Should -Be 'Unit test helper functions for PowerShell.'
+    }
+
+    It 'should have a PowerShellVersion of 5.1' {
+        # Arrange and Act
+        $PowerShellVersion = Test-ModuleManifest -Path '.\HelperModule.psd1' | Select-Object -ExpandProperty 'PowerShellVersion'
+
+        # Assert
+        $PowerShellVersion | Should -Be '5.1'
+    }
+
+    It 'should have a NestedModule of ConvertModule' {
+        # Arrange and Act
+        $NestedModules = Test-ModuleManifest -Path '.\HelperModule.psd1' | Select-Object -ExpandProperty 'NestedModules'
+
+        # Assert
+        $NestedModules | Should -Be 'ConvertModule'
     }
 }
 
@@ -219,7 +246,7 @@ Describe 'Test-HasProperty' {
             }
 
             # Act and Assert
-            'Name' | Test-HasProperty -Object $Object -Strict | Should -BeTrue
+            $Object | Test-HasProperty -Object $Object -Strict | Should -BeTrue
         }
     }
 }
