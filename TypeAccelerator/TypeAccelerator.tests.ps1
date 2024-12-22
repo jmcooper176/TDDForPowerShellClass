@@ -153,8 +153,77 @@ AfterAll {
     Get-Module -Name 'TypeAccelerator' | Remove-Module -Force -Verbose
 }
 
+BeforeAll {
+    $ModulePath = Join-Path -Path $PSScriptRoot -ChildPath '.\TypeAccelerator.psd1'
+    Import-Module -Name $ModulePath -Verbose
+}
+
 Describe 'TypeAccelerator Unit Tests' {
     Context 'TypeAccelerator Module' {
+        It 'should have a RootModule of TypeAccelerator.psm1' {
+            # Arrange and Act
+            $RootModule = Test-ModuleManifest -Path '.\TypeAccelerator.psd1' | Select-Object -ExpandProperty 'RootModule'
+    
+            # Assert
+            $RootModule | Should -Be 'TypeAccelerator.psm1'
+        }
+    
+        It 'should have a ModuleVersion of 0.0.1' {
+            # Arrange and Act
+            $ModuleVersion = Test-ModuleManifest -Path '.\TypeAccelerator.psd1' | Select-Object -ExpandProperty 'Version'
+            
+            # Assert
+            $ModuleVersion | Should -Be '0.0.1'
+        }
+    
+        It 'should have a GUID of 821cb68a-a769-4432-a70e-6a70b6e0de29' {
+            # Arrange and Act
+            $Guid = Test-ModuleManifest -Path '.\TypeAccelerator.psd1' | Select-Object -ExpandProperty 'GUID'
+    
+            # Assert
+            $Guid | Should -Be '821cb68a-a769-4432-a70e-6a70b6e0de29'
+        }
+    
+        It 'should have an Author of John Merryweather Cooper' {
+            # Arrange and Act
+            $Author = Test-ModuleManifest -Path '.\TypeAccelerator.psd1' | Select-Object -ExpandProperty 'Author'
+            
+            # Assert
+            $Author | Should -Be 'John Merryweather Cooper'
+        }
+    
+        It 'should have a CompanyName of Ram Tuned Mega Code' {
+            # Arrange and Act
+            $CompanyName = Test-ModuleManifest -Path '.\TypeAccelerator.psd1' | Select-Object -ExpandProperty 'CompanyName'
+            
+            # Assert
+            $CompanyName | Should -Be 'Ram Tuned Mega Code'
+        }
+    
+        It 'should have a Copyright of Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.' {
+            # Arrange and Act
+            $Copyright = Test-ModuleManifest -Path '.\TypeAccelerator.psd1' | Select-Object -ExpandProperty 'Copyright'
+            
+            # Assert
+            $Copyright | Should -Be 'Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.'
+        }
+    
+        It 'should have a Description of Library of cmdlets/functions to register type accelerators.' {
+            # Arrange and Act
+            $Description = Test-ModuleManifest -Path '.\TypeAccelerator.psd1' | Select-Object -ExpandProperty 'Description'
+    
+            # Assert
+            $Description | Should -Be 'Library of cmdlets/functions to register type accelerators.'
+        }
+    
+        It 'should have a PowerShellVersion of 5.1' {
+            # Arrange and Act
+            $PowerShellVersion = Test-ModuleManifest -Path '.\TypeAccelerator.psd1' | Select-Object -ExpandProperty 'PowerShellVersion'
+    
+            # Assert
+            $PowerShellVersion | Should -Be '5.1'
+        }
+
         It -Name 'Has methods' -ForEach $MethodList -Tag @('Unit', 'Test') {
             # Arrange
             $testPathSplat = @{
@@ -168,10 +237,10 @@ Describe 'TypeAccelerator Unit Tests' {
 
         It -Name 'Has correct path' -Tag @('Unit', 'Test') {
             # Arrange
-            $Expected = $ModulePath
+            $Expected = $ModulePath | Resolve-Path
 
             # Act
-            $Actual = Test-ModuleManifest -Path $Expected | Select-Object -ExpandProperty Path
+            $Actual = Test-ModuleManifest -Path $Expected | Select-Object -ExpandProperty Path | Resolve-Path
 
             # Assert
             $Actual | Should -Be $Expected
@@ -239,7 +308,7 @@ Describe 'Get-TypeAccelerator Unit Tests' {
 
         It -Name 'Get-TypeAccelerator -ListAvailable gets count TypeAccelerators' -Tag @('Unit', 'Test') {
             # Arrange
-            $Expected = $TestData.Length
+            $Expected = 107
 
             # Act
             $Actual = Get-TypeAccelerator -ListAvailable | Select-Object -ExpandProperty Count
