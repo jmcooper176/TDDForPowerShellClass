@@ -24,13 +24,13 @@ GUID = '196e2256-561c-4cdf-87dc-5146720c69c2'
 Author = 'John Merryweather Cooper'
 
 # Company or vendor of this module
-CompanyName = 'Ram Tuned Mega-Code'
+CompanyName = 'Ram Tuned Mega Code'
 
 # Copyright statement for this module
-Copyright = 'Copyright (c) 2024, John Merryweather Cooper. All rights reserved.'
+Copyright = 'Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.'
 
 # Description of the functionality provided by this module
-Description = 'Unit test helper functions for PowerShell'
+Description = 'Unit test helper functions for PowerShell.'
 
 # Minimum version of the PowerShell engine required by this module
 PowerShellVersion = '5.1'
@@ -66,16 +66,16 @@ PowerShellVersion = '5.1'
 # FormatsToProcess = @()
 
 # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-# NestedModules = @()
+NestedModules = 'ConvertModule.psd1'
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'ConvertFrom-Type', 'ConvertTo-Type',
+FunctionsToExport = 
     'Select-ModuleByFilter', 'Select-ModuleByProperty',
     'Test-HasMember', 'Test-HasMethod', 'Test-HasProperty',
     'Test-ModuleProperty'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = 'ConvertFrom-Type', 'ConvertTo-Type',
+CmdletsToExport = 
     'Select-ModuleByFilter', 'Select-ModuleByProperty',
     'Test-HasMember', 'Test-HasMethod', 'Test-HasProperty',
     'Test-ModuleProperty'
@@ -110,7 +110,7 @@ PrivateData = @{
         ProjectUri = 'https://github.com/jmcooper176/TDDForPowerShellClass'
 
         # A URL to an icon representing this module.
-        # IconUri = ''
+        IconUri = 'https://github.com/jmcooper176/TDDForPowerShellClass/vine.ico'
 
         # ReleaseNotes of this module
         # ReleaseNotes = ''
