@@ -69,10 +69,22 @@ PowerShellVersion = '7.2'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @()
+FunctionsToExport = 'Convert-FromType', 'ConvertTo-Type',
+    'ConvertTo-Boolean', 'ConvertTo-Byte',
+    'ConvertTo-Char', 'ConvertTo-DateTime', 'ConvertTo-Decimal',
+    'ConvertTo-Double', 'ConvertTo-Float', 'ConvertTo-Integer',
+    'ConvertTo-Long', 'ConvertTo-Short', 'ConvertTo-SignedByte',
+    'ConvertTo-String', 'ConvertTo-UnsignedShort', 'ConvertTo-UnsignedInteger',
+    'ConvertTo-UnsignedLong', 'ConvertTo-UnsignedShort'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = @()
+CmdletsToExport = 'Convert-FromType', 'ConvertTo-Type',
+    'ConvertTo-Boolean', 'ConvertTo-Byte',
+    'ConvertTo-Char', 'ConvertTo-DateTime', 'ConvertTo-Decimal',
+    'ConvertTo-Double', 'ConvertTo-Float', 'ConvertTo-Integer',
+    'ConvertTo-Long', 'ConvertTo-Short', 'ConvertTo-SignedByte',
+    'ConvertTo-String', 'ConvertTo-UnsignedShort', 'ConvertTo-UnsignedInteger',
+    'ConvertTo-UnsignedLong', 'ConvertTo-UnsignedShort'
 
 # Variables to export from this module
 VariablesToExport = '*'
@@ -95,16 +107,16 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        # Tags = @()
+        Tags = @('Convert', 'Unit Testing', 'Unit', 'Testing', 'Helper Functions', 'Helper', 'Functions')
 
         # A URL to the license for this module.
-        # LicenseUri = ''
+        LicenseUri = 'https://github.com/jmcooper176/TDDForPowerShellClass/LICENSE'
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        ProjectUri = 'https://github.com/jmcooper176/TDDForPowerShellClass'
 
         # A URL to an icon representing this module.
-        # IconUri = ''
+        IconUri = 'https://github.com/jmcooper176/TDDForPowerShellClass/vine.ico'
 
         # ReleaseNotes of this module
         # ReleaseNotes = ''
@@ -113,7 +125,7 @@ PrivateData = @{
         # Prerelease = ''
 
         # Flag to indicate whether the module requires explicit user acceptance for install/update/save
-        # RequireLicenseAcceptance = $false
+        RequireLicenseAcceptance = $false
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
