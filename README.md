@@ -1,10 +1,15 @@
 # Source for the Book "Test Driven Design for PowerShell Classes"
 
-### By John Merryweather Cooper
+## Authorship
 
-Snapshots of source:
+John Merryweather Cooper
+Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
 
-## Vine-0
+Use is of this software is permitted only in compliance with the BSD-3-Clause License that should have been included with this software.
+
+## Snapshots of source
+
+### Vine-0
 
 Initial Red-Green Unit Tests setting the design.
 
@@ -19,7 +24,7 @@ Initial Red-Green Unit Tests setting the design.
 * the method
   * [void]Dispose()
 
-## Vine-1
+### Vine-1
 
 Refinements to:
 
@@ -48,13 +53,13 @@ Refinements to:
   * [void]Clear() method
   * [void]Dispose() method
 
-## Vine-2
+### Vine-2
 
 Refinements to:
 
 * add support for registering a TypeAccelerator
 
-## Vine-3
+### Vine-3
 
 Refinements to:
 
@@ -64,7 +69,7 @@ Refinements to:
 * NotEquals([Vine]) method
 * static NotEquals([Vine], [Vine]) method
 
-## Vine-4
+### Vine-4
 
 Refinement to:
 
@@ -73,28 +78,28 @@ Refinement to:
 * [void]Emplace([Vine])
 * static [void]Swap([Vine], [Vine]) method
 
-## Vine-5
+### Vine-5
 
 Refinement to:
 
 * [object]Cast([Type]) method
 
-## Vine-6
+### Vine-6
 
 Refinement to:
 
 * [bool]HasValue() method
 
-## Vine-7
+### Vine-7
 
 Refinement to:
 
 * [type]AsType()
 * [string]ToString()
 
-## Vine-8
+### Vine-8
 
-Refinement to: 
+Refinement to:
 
 * static [type]BaseType([Vine])
 * static [bool]CanConvert([Vine], [Vine])
