@@ -30,7 +30,7 @@
     Copyright         = 'Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.'
 
     # Description of the functionality provided by this module
-    Description = 'Cmdlets/functions to format and write messages.'
+    Description = 'Cmdlets/functions to format and write messages loosely following the Microsoft compiler message format.'
 
     # Minimum version of the PowerShell engine required by this module
     PowerShellVersion = '5.1'

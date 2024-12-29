@@ -30,7 +30,7 @@ CompanyName = 'Ram Tuned Mega Code'
 Copyright = 'Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.'
 
 # Description of the functionality provided by this module
-Description = 'Unit test helper functions for PowerShell.'
+Description = 'Unit test helper functions for PowerShell Pester.'
 
 # Minimum version of the PowerShell engine required by this module
 PowerShellVersion = '5.1'

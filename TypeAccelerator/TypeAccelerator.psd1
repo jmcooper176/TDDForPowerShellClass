@@ -30,7 +30,7 @@ CompanyName = 'Ram Tuned Mega Code'
 Copyright = 'Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.'
 
 # Description of the functionality provided by this module
-Description = 'Library of cmdlets/functions to register type accelerators.'
+Description = 'Library of cmdlets/functions to register/un-register type accelerators.'
 
 # Minimum version of the PowerShell engine required by this module
 PowerShellVersion = '5.1'
@@ -70,11 +70,11 @@ PowerShellVersion = '5.1'
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = 'Add-TypeAccelerator', 'Get-TypeAccelerator', 'Get-TypeAcceleratorClass',
-    'Register-TypeAccelerator', 'Remove-TypeAccelerator', 'Test-TypeAcceleratorRegistered'
+    'Register-TypeAccelerator', 'Remove-TypeAccelerator', 'Test-TypeAcceleratorRegistered', 'Unregister-TypeAccelerator'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = 'Add-TypeAccelerator', 'Get-TypeAccelerator', 'Get-TypeAcceleratorClass',
-    'Register-TypeAccelerator', 'Remove-TypeAccelerator', 'Test-TypeAcceleratorRegistered'
+    'Register-TypeAccelerator', 'Remove-TypeAccelerator', 'Test-TypeAcceleratorRegistered', 'Unregister-TypeAccelerator'
 
 # Variables to export from this module
 VariablesToExport = '*'
@@ -115,7 +115,7 @@ PrivateData = @{
         # Prerelease = ''
 
         # Flag to indicate whether the module requires explicit user acceptance for install/update/save
-        RequireLicenseAcceptance = $false
+        # RequireLicenseAcceptance = $false
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
