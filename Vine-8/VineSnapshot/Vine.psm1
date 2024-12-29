@@ -242,12 +242,13 @@ function New-Vine {
     param (
         [AllowNull()]
         [object]
-        $Value,
+        $Value = $null,
 
         [ValidateNotNull()]
         [type]
-        $Type,
+        $Type = [object],
 
+        [ValidateNotNull()]
         [hashtable]
         $Properties
     )

@@ -1,8 +1,7 @@
 <#
     class Vine
 #>
-class Vine : System.IDisposable
-{
+class Vine : System.IDisposable {
     <#
         Public Properties
     #>

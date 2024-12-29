@@ -142,7 +142,7 @@ function New-Vine {
     Set-StrictMode -Version 3.0
     Set-Variable -Name 'CmdletName' -Option ReadOnly -Value $PSCmdlet.MyInvocation.MyCommand.Name -WhatIf:$false
 
-    if (($null -ne $Value) -or ($Type -ne [object])) {
+    if (($null -ne $Value) -and ($Type -ne [object])) {
         if ($PSCmdlet.ShouldProcess('Value and Type Constructor', $CmdletName)) {
             [Vine]::new($Value, $Type) | Write-Output
         }
