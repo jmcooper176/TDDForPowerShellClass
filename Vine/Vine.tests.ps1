@@ -182,7 +182,7 @@ Describe -Name 'Vine' -Tag 'Module', 'Unit', 'Test', 'Red', 'Green' {
             $Copyright = Test-ModuleManifest -Path '.\Vine.psd1' | Select-Object -ExpandProperty 'Copyright'
         
             # Assert
-            $Copyright | Should -Be 'Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.'
+            $Copyright | Should -Be 'Copyright © 2024, John Merryweather Cooper.  All Rights Reserved.'
         }
 
         It 'should have a Description of Base class example for Test Driven Design for PowerShell Classes.' {
@@ -207,13 +207,11 @@ Describe -Name 'Vine' -Tag 'Module', 'Unit', 'Test', 'Red', 'Green' {
             BeforeEach {
                 # Arrange
                 Import-Module -Name $ModulePath -Force
-                Import-Module -Name $TypeAcceleratorPath -Force
             }
     
             AfterEach {
                 # Act
                 Get-Module -Name 'Vine' | Remove-Module -Force
-                Get-Module -Name 'TypeAccelerator' | Remove-Module -Force
             }
     
             It -Name 'Should not throw' -Tag 'Unit', 'Test' {
@@ -271,17 +269,14 @@ Describe -Name 'Vine' -Tag 'Module', 'Unit', 'Test', 'Red', 'Green' {
             BeforeEach {
                 # Arrange
                 Import-Module -Name $ModulePath -Force
-                Import-Module -Name $TypeAcceleratorPath -Force
             }
     
             AfterEach {
                 # Act
                 Get-Module -Name 'Vine' | Remove-Module -Force
-                Get-Module -Name 'TypeAccelerator' | Remove-Module -Force
     
                 # Assert
                 Get-Module -Name 'Vine' | Should -BeNull
-                Get-Module -Name 'TypeAccelerator' | Should -BeNull
             }
     
             It -Name 'Should not throw' -Tag 'Unit', 'Test' {
@@ -339,13 +334,11 @@ Describe -Name 'Vine' -Tag 'Module', 'Unit', 'Test', 'Red', 'Green' {
             BeforeEach {
                 # Arrange
                 Import-Module -Name $ModulePath -Force
-                Import-Module -Name $TypeAcceleratorPath -Force
             }
     
             AfterEach {
                 # Act
                 Get-Module -Name 'Vine' | Remove-Module -Force
-                Get-Module -Name 'TypeAccelerator' | Remove-Module -Force
             }
     
             It -Name 'TypeAccelerator Vine should not throw' -Tag 'Unit', 'Test' {
@@ -403,13 +396,11 @@ Describe -Name 'Vine' -Tag 'Module', 'Unit', 'Test', 'Red', 'Green' {
             BeforeEach {
                 # Arrange
                 Import-Module -Name $ModulePath -Force
-                Import-Module -Name $TypeAcceleratorPath -Force
             }
     
             AfterEach {
                 # Act
                 Get-Module -Name 'Vine' | Remove-Module -Force
-                Get-Module -Name 'TypeAccelerator' | Remove-Module -Force
             }
     
             It -Name 'Should not throw' -ForEach $TestData -Tag 'Unit', 'Test' {
@@ -475,13 +466,11 @@ Describe -Name 'Vine' -Tag 'Module', 'Unit', 'Test', 'Red', 'Green' {
             BeforeEach {
                 # Arrange
                 Import-Module -Name $ModulePath -Force
-                Import-Module -Name $TypeAcceleratorPath -Force
             }
     
             AfterEach {
                 # Act
                 Get-Module -Name 'Vine' | Remove-Module -Force
-                Get-Module -Name 'TypeAccelerator' | Remove-Module -Force
             }
     
             It -Name 'Should not throw' -ForEach $TestData -Tag 'Unit', 'Test' {
@@ -547,13 +536,11 @@ Describe -Name 'Vine' -Tag 'Module', 'Unit', 'Test', 'Red', 'Green' {
             BeforeEach {
                 # Arrange
                 Import-Module -Name $ModulePath -Force
-                Import-Module -Name $TypeAcceleratorPath -Force
             }
     
             AfterEach {
                 # Act
                 Get-Module -Name 'Vine' | Remove-Module -Force
-                Get-Module -Name 'TypeAccelerator' | Remove-Module -Force
             }
     
             It -Name 'Should not throw' -ForEach $TestData -Tag 'Unit', 'Test' {
@@ -619,13 +606,11 @@ Describe -Name 'Vine' -Tag 'Module', 'Unit', 'Test', 'Red', 'Green' {
             BeforeEach {
                 # Arrange
                 Import-Module -Name $ModulePath -Force
-                Import-Module -Name $TypeAcceleratorPath -Force
             }
     
             AfterEach {
                 # Act
                 Get-Module -Name 'Vine' | Remove-Module -Force
-                Get-Module -Name 'TypeAccelerator' | Remove-Module -Force
             }
 
             It -Name 'Should not throw' -ForEach $TestData -Tag 'Unit', 'Test' {
@@ -699,13 +684,11 @@ Describe -Name 'Vine' -Tag 'Module', 'Unit', 'Test', 'Red', 'Green' {
             BeforeEach {
                 # Arrange
                 Import-Module -Name $ModulePath -Force
-                Import-Module -Name $TypeAcceleratorPath -Force
             }
     
             AfterEach {
                 # Act
                 Get-Module -Name 'Vine' | Remove-Module -Force
-                Get-Module -Name 'TypeAccelerator' | Remove-Module -Force
             }
 
             It -Name 'Should not throw' -ForEach $TestData -Tag 'Unit', 'Test' {
@@ -779,13 +762,11 @@ Describe -Name 'Vine' -Tag 'Module', 'Unit', 'Test', 'Red', 'Green' {
             BeforeEach {
                 # Arrange
                 Import-Module -Name $ModulePath -Force
-                Import-Module -Name $TypeAcceleratorPath -Force
             }
     
             AfterEach {
                 # Act
                 Get-Module -Name 'Vine' | Remove-Module -Force
-                Get-Module -Name 'TypeAccelerator' | Remove-Module -Force
             }
 
             It -Name 'Should not throw' -ForEach $TestData -Tag 'Unit', 'Test' {
@@ -859,13 +840,11 @@ Describe -Name 'Vine' -Tag 'Module', 'Unit', 'Test', 'Red', 'Green' {
             BeforeEach {
                 # Arrange
                 Import-Module -Name $ModulePath -Force
-                Import-Module -Name $TypeAcceleratorPath -Force
             }
     
             AfterEach {
                 # Act
                 Get-Module -Name 'Vine' | Remove-Module -Force
-                Get-Module -Name 'TypeAccelerator' | Remove-Module -Force
             }
 
             It -Name 'Should not throw' -ForEach $TestData -Tag 'Unit', 'Test' {
