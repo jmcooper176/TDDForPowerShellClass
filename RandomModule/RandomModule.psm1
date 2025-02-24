@@ -1,18 +1,145 @@
 <#
     Script-scoped variables
 #>
-$IntegerArray = @()
+$ByteArray = @([byte]0) * ([Environment]::SystemPageSize / ([byte]0).GetByteCount())
 
-$FloatArray = @()
+$FloatArray = @([float]0.0) * ([Environment]::SystemPageSize / ([float]0.0).GetExponentByteCount() + ([float]0.0).GetSignificandByteCount())
 
-$DoubleArray = @()
+$DoubleArray = @(0.0) * ([Environment]::SystemPageSize / (0.0).GetExponentByteCount() + (0.0).GetSignificandByteCount())
 
-$LongArray = @()
+$IntegerArray = @(0) * ([Environment]::SystemPageSize / (0).GetByteCount())
+
+$LongArray = @([long]0) * ([Environment]::SystemPageSize / ([long]0).GetByteCount())
 
 $IsInitialized = $false
 
 <#
-Get-RandomDouble
+    Get-RandomByte
+#>
+function Get-RandomByte {
+    [CmdletBinding()]
+    [OutputType([byte])]
+    param (
+        [ValidateRange(0, 255)]
+        [byte]
+        $Minimum = 0,
+
+        [ValidateRange(0, 255)]
+        [byte]
+        $Maximum = 255
+    )
+
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+    if ($Minimum -ge $Maximum) {
+        $message = 'The minimum value must be less than the maximum value.'
+        $exception = [System.ArgumentOutOfRangeException]::new('Minimum', $Minimum, $message)
+        
+        $writeErrorSplat = @{
+            Exception    = $exception
+            ErrorId      = "$($CmdletName)-MinimumGreaterThanMaximum-01"
+            Category     = 'InvalidArgument'
+            TargetObject = $Minimum
+            ErrorAction  = 'Continue'
+        }
+
+        Write-Error @writeErrorSplat
+        throw $exception
+    }
+
+    if (-not $Script:IsInitialized) {
+        Write-Warning -Message "$($CmdletName) : Random number generator has not been initialized. Initializing now."
+        Initialize-Random
+    }
+
+    $index = $Script:Random.Next(0, $Script:ByteArray.Length - 1)
+    Write-Debug -Message "$($CmdletName) : Index = $index"
+
+    try {
+        Write-Verbose -Message "$($CmdletName) : Generating random signed byte."
+        [byte](($Script:ByteArray[$index] % ($Maximum - $Minimum + 1)) + $Minimum) | Write-Output
+    }
+    finally {
+        Write-Debug -Message "$($CmdletName) : Initializing byte array element $index."
+        $Script:ByteArray[$index] = [byte]$Random.Next(0, [byte]::MaxValue)
+    }
+
+    <#
+        .SYNOPSIS
+        Generates a random byte.
+
+        .DESCRIPTION
+        Generates a random byte between the specified minimum and maximum values.  If no minimum and maximum values are specified, the range is from 0 to 255.
+
+        .PARAMETER Minimum
+        The minimum value of the random byte.
+
+        .PARAMETER Maximum
+        The maximum value of the random byte.
+
+        .INPUTS
+        None.  You cannot pipe objects to Get-RandomByte.
+
+        .OUTPUTS
+        [byte].  Get-RandomByte generates a random byte.
+
+        .EXAMPLE
+        PS> Get-RandomByte
+
+        223
+
+        Generates a random long integer between 0 and 255.
+
+        .EXAMPLE
+        PS> Get-RandomByte -Maximum 128
+
+        122
+
+        Generates a random long integer between 0 and 128.
+
+        .EXAMPLE
+        PS> Get-RandomByte -Minimum 128 -Maximum 192
+
+        130
+
+        Generates a random long integer between 128 and 192.
+
+
+        .NOTES
+        Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
+
+        .LINK
+        about_CommonParameters
+
+        .LINK
+        about_Functions_Advanced
+
+        .LINK
+        Initialize-Random
+
+        .LINK
+        Set-StrictMode
+
+        .LINK
+        Set-Variable
+
+        .LINK
+        Write-Debug
+
+        .LINK
+        Write-Output
+
+        .LINK
+        Write-Verbose
+
+        .LINK
+        Write-Warning
+    #>
+}
+
+<#
+    Get-RandomDouble
 #>
 function Get-RandomDouble {
     [CmdletBinding()]
@@ -23,16 +150,19 @@ function Get-RandomDouble {
     Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     if (-not $Script:IsInitialized) {
-        Write-Warning -Message "$($CmdletName): Random number generator has not been initialized. Initializing now."
+        Write-Warning -Message "$($CmdletName) : Random number generator has not been initialized. Initializing now."
         Initialize-Random
     }
 
-    $index = $Random.Next(0, $Script:DoubleLength)
+    $index = $Script:Random.Next(0, $Script:DoubleArray.Length - 1)
+    Write-Debug -Message "$($CmdletName) : Index = $index"
 
     try {
+        Write-Verbose -Message "$($CmdletName) : Generating random double-precision floating-point number."
         $Script:DoubleArray[$index] | Write-Output
     }
     finally {
+        Write-Debug -Message "$($CmdletName) : Initializing double array element $index."
         $Script:DoubleArray[$index] = $Random.NextDouble()
     }
 
@@ -52,7 +182,7 @@ function Get-RandomDouble {
         .EXAMPLE
         PS> Get-RandomDouble
 
-        0.123456789
+        0.223841752495543
 
         Generates a random double-precision floating-point number between 0.0 and 1.0.
 
@@ -75,7 +205,13 @@ function Get-RandomDouble {
         Set-Variable
 
         .LINK
+        Write-Debug
+
+        .LINK
         Write-Output
+
+        .LINK
+        Write-Verbose
 
         .LINK
         Write-Warning
@@ -83,7 +219,87 @@ function Get-RandomDouble {
 }
 
 <#
-Get-RandomInteger
+    Get-RandomFloat
+#>
+function Get-RandomFloat {
+    [CmdletBinding()]
+    [OutputType([float])]
+    param ()
+
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+    if (-not $Script:IsInitialized) {
+        Write-Warning -Message "$($CmdletName) : Random number generator has not been initialized. Initializing now."
+        Initialize-Random
+    }
+
+    $index = $Script:Random.Next(0, $Script:FloatArray.Length - 1)
+    Write-Debug -Message "$($CmdletName) : Index = $index"
+
+    try {
+        Write-Verbose -Message "$($CmdletName) : Generating random floating-point number."
+        $Script:FloatArray[$index] | Write-Output
+    }
+    finally {
+        Write-Debug -Message "$($CmdletName) : Initializing float array element $index."
+        $Script:FloatArray[$index] = $Random.NextSingle()
+    }
+
+    <#
+        .SYNOPSIS
+        Generates a random floating-point number.
+
+        .DESCRIPTION
+        Generates a random floating-point number between 0.0 and 1.0.
+        
+        .INPUTS
+        None.  You cannot pipe objects to Get-RandomFloat.
+
+        .OUTPUTS
+        [float].  Get-RandomFloat generates a random floating-point number.
+
+        .EXAMPLE
+        PS> Get-RandomFloat
+
+        0.5653152
+
+        Generates a random floating-point number between 0.0 and 1.0.
+
+        .NOTES
+        Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
+
+        .LINK
+        about_CommonParameters
+
+        .LINK
+        about_Functions_Advanced
+
+        .LINK
+        Initialize-Random
+
+        .LINK
+        Set-StrictMode
+
+        .LINK
+        Set-Variable
+
+        .LINK
+        Write-Debug
+
+        .LINK
+        Write-Output
+
+        .LINK
+        Write-Verbose
+
+        .LINK
+        Write-Warning
+    #>
+}
+
+<#
+    Get-RandomInteger
 #>
 function Get-RandomInteger {
     [CmdletBinding()]
@@ -102,17 +318,41 @@ function Get-RandomInteger {
     Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     if (-not $Script:IsInitialized) {
-        Write-Warning -Message "$($CmdletName): Random number generator has not been initialized. Initializing now."
+        Write-Warning -Message "$($CmdletName) : Random number generator has not been initialized. Initializing now."
         Initialize-Random
     }
 
-    $index = $Random.Next(0, $Script:IntLength - 1)
+    if ($Minimum -ge $Maximum) {
+        $message = 'The minimum value must be less than the maximum value.'
+        $exception = [System.ArgumentOutOfRangeException]::new('Minimum', $Minimum, $message)
+        
+        $writeErrorSplat = @{
+            Exception    = $exception
+            ErrorId      = "$($CmdletName)-MinimumGreaterThanMaximum-01"
+            Category     = 'InvalidArgument'
+            TargetObject = $Minimum
+            ErrorAction  = 'Continue'
+        }
 
+        Write-Error @writeErrorSplat
+        throw $exception
+    }
+
+    $index = $Script:Random.Next(0, $Script:IntegerArray.Length - 1)
+    
     try {
-        $Script:IntegerArray[$index] % ($Maximum - $Minimum + 1) + $Minimum | Write-Output
+        Write-Verbose -Message "$($CmdletName) : Generating random integer."
+
+        do {
+            $result = [int](($Script:IntegerArray[$index] % ($Maximum - $Minimum + 1)) + $Minimum)
+        }
+        while ($result -lt $Minimum -or $result -gt $Maximum)
+
+        $result | Write-Output
     }
     finally {
-        $Script:IntegerArray[$index] = $Random.Next()
+        Write-Debug -Message "$($CmdletName) : Initializing integer array element $index."
+        $Script:IntegerArray[$index] = $Script:Random.Next(0, [int]::MaxValue)
     }
 
     <#
@@ -137,80 +377,23 @@ function Get-RandomInteger {
         .EXAMPLE
         PS> Get-RandomInteger
 
-        123456789
+        746151833
 
         Generates a random integer between 0 and 2147483647.
 
-        .NOTES
-        Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
+        .EXAMPLE
+        PS> Get-RandomInteger -Maximum 100
 
-        .LINK
-        about_CommonParameters
+        28
 
-        .LINK
-        about_Functions_Advanced
-
-        .LINK
-        Initialize-Random
-
-        .LINK
-        Set-StrictMode
-
-        .LINK
-        Set-Variable
-
-        .LINK
-        Write-Output
-
-        .LINK
-        Write-Warning
-    #>
-}
-
-<#
-Get-RandomFloat
-#>
-function Get-RandomFloat {
-    [CmdletBinding()]
-    [OutputType([float])]
-    param ()
-
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
-
-    if (-not $Script:IsInitialized) {
-        Write-Warning -Message "$($CmdletName): Random number generator has not been initialized. Initializing now."
-        Initialize-Random
-    }
-
-    $index = $Random.Next(0, $Script:FloatLength - 1)
-
-    try {
-        $Script:FloatArray[$index] | Write-Output
-    }
-    finally {
-        $Script:FloatArray[$index] = $Random.NextSingle()
-    }
-
-    <#
-        .SYNOPSIS
-        Generates a random floating-point number.
-
-        .DESCRIPTION
-        Generates a random floating-point number between 0.0 and 1.0.
-        
-        .INPUTS
-        None.  You cannot pipe objects to Get-RandomFloat.
-
-        .OUTPUTS
-        [float].  Get-RandomFloat generates a random floating-point number.
+        Generates a random integer between 0 and 100.
 
         .EXAMPLE
-        PS> Get-RandomFloat
+        PS> Get-RandomInteger -Minimum 100 -Maximum 200
 
-        0.123456789
+        159
 
-        Generates a random floating-point number between 0.0 and 1.0.
+        Generates a random integer between 100 and 200.
 
         .NOTES
         Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
@@ -231,7 +414,13 @@ function Get-RandomFloat {
         Set-Variable
 
         .LINK
+        Write-Debug
+
+        .LINK
         Write-Output
+
+        .LINK
+        Write-Verbose
 
         .LINK
         Write-Warning
@@ -239,7 +428,7 @@ function Get-RandomFloat {
 }
 
 <#
-Get-RandomInteger
+    Get-RandomLong
 #>
 function Get-RandomLong {
     [CmdletBinding()]
@@ -257,18 +446,41 @@ function Get-RandomLong {
     Set-StrictMode -Version 3.0
     Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
+    if ($Minimum -ge $Maximum) {
+        $message = 'The minimum value must be less than the maximum value.'
+        $exception = [System.ArgumentOutOfRangeException]::new('Minimum', $Minimum, $message)
+        
+        $writeErrorSplat = @{
+            Exception    = $exception
+            ErrorId      = "$($CmdletName)-MinimumGreaterThanMaximum-01"
+            Category     = 'InvalidArgument'
+            TargetObject = $Minimum
+            ErrorAction  = 'Continue'
+        }
+
+        Write-Error @writeErrorSplat
+        throw $exception
+    }
+
     if (-not $Script:IsInitialized) {
-        Write-Warning -Message "$($CmdletName): Random number generator has not been initialized. Initializing now."
+        Write-Warning -Message "$($CmdletName) : Random number generator has not been initialized. Initializing now."
         Initialize-Random
     }
 
-    $index = $Random.Next(0, $Script:LongLength - 1)
-
+    $index = $Script:Random.Next(0, $Script:LongArray.Length - 1)
+    Write-Debug -Message "$($CmdletName) : Index = $index"
+    
     try {
-        $Script:LongArray[$index] % ($Maximum - $Minimum + 1) + $Minimum | Write-Output
+        do {
+            $result = [long](($Script:LongArray[$index] % ($Maximum - $Minimum + 1)) + $Minimum)
+        }
+        while ($result -lt $Minimum -or $result -gt $Maximum)
+
+        $result | Write-Output
     }
     finally {
-        $Script:LongArray[$index] = $Random.NextLong()
+        Write-Debug -Message "$($CmdletName) : Initializing long integer array element $index."
+        $Script:IntegerArray[$index] = $Random.NextInt64(0, [long]::MaxValue)
     }
 
     <#
@@ -293,9 +505,23 @@ function Get-RandomLong {
         .EXAMPLE
         PS> Get-RandomLong
 
-        4567890123456789
+        4.09590614013807E+18
 
         Generates a random long integer between 0 and 9223372036854775807.
+
+        .EXAMPLE
+        PS> Get-RandomLong -Maximum 100
+
+        16
+
+        Generates a random long integer between 0 and 100.
+
+        .EXAMPLE
+        PS> Get-RandomLong -Minimum 100 -Maximum 200
+
+        169
+
+        Generates a random long integer between 100 and 200.
 
         .NOTES
         Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
@@ -316,7 +542,13 @@ function Get-RandomLong {
         Set-Variable
 
         .LINK
+        Write-Debug
+
+        .LINK
         Write-Output
+
+        .LINK
+        Write-Verbose
 
         .LINK
         Write-Warning
@@ -340,35 +572,43 @@ function Initialize-Random {
     Set-StrictMode -Version 3.0
     Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
-    if (-not $PSBoundParameters.ContainsKey('Seed') -and -not $DefaultSeet.IsPresent) {
-        $Seed = [Convert]::ToInt32([DateTime]::UtcNow.Ticks)
+    if (-not $PSBoundParameters.ContainsKey('Seed') -and -not $DefaultSeed.IsPresent) {
+        Write-Verbose -Message "$($CmdletName) : No seed specified. Using current UTC time in ticks as seed."
+        $Seed = [int](((Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
     }
     elseif ($DefaultSeed.IsPresent) {
+        Write-Verbose -Message "$($CmdletName) : Using default seed of 0."
         $Seed = 0
     }
 
     [Random]::new($Seed) | Set-Variable -Name Random -Option ReadOnly -Scope Script
-    Set-Variable -Name IntLength -Option Constant -Value 1021 -Scope Script
-    Set-Variable -Name FloatLength -Option Constant -Value 1021 -Scope Script
-    Set-Variable -Name DoubleLength -Option Constant -Value 509 -Scope Script
-    Set-Variable -Name LongLength -Option Constant -Value 509 -Scope Script
 
-    for ($i = 0; $i -lt $Script:IntLength; $i++) {
-        $IntegerArray[$i] = $Random.Next()
+    for ($i = 0; $i -lt $Script:ByteArray.Length; $i++) {
+        Write-Debug -Message "$($CmdletName) : Initializing byte array element $i."
+        $Script:ByteArray[$i] = [byte]$Random.Next(0, [byte]::MaxValue)
     }
 
-    for ($i = 0; $i -lt $Script:FloatLength; $i++) {
-        $floatArray[$i] = $Random.NextSingle()
+    for ($i = 0; $i -lt $Script:DoubleArray.Length; $i++) {
+        Write-Debug -Message "$($CmdletName) : Initializing double array element $i."
+        $Script:DoubleArray[$i] = $Random.NextDouble()
     }
 
-    for ($i = 0; $i -lt $Script:DoubleLength; $i++) {
-        $doubleArray[$i] = $Random.NextDouble()
+    for ($i = 0; $i -lt $Script:FloatArray.Length; $i++) {
+        Write-Debug -Message "$($CmdletName) : Initializing float array element $i."
+        $Script:FloatArray[$i] = $Random.NextSingle()
     }
 
-    for ($i = 0; $i -lt $Script:LongLength; $i++) {
-        $longArray[$i] = $Random.NextLong()
+    for ($i = 0; $i -lt $Script:IntegerArray.Length; $i++) {
+        Write-Debug -Message "$($CmdletName) : Initializing integer array element $i."
+        $Script:IntegerArray[$i] = $Random.Next(0, [int]::MaxValue)
     }
 
+    for ($i = 0; $i -lt $Script:LongArray.Length; $i++) {
+        Write-Debug -Message "$($CmdletName) : Initializing long integer array element $i."
+        $Script:LongArray[$i] = $Random.NextInt64(0, [long]::MaxValue)
+    }
+
+    Write-Verbose -Message "$($CmdletName) : Random number generator initialized."
     $Script:IsInitialized = $true
 
     <#
@@ -391,9 +631,19 @@ function Initialize-Random {
         None.  Initialize-Random does not generate any output.
 
         .EXAMPLE
+        PS> Initialize-Random
+
+        Initializes the random number generator with the current UTC time in ticks as the seed.
+
+        .EXAMPLE
         PS> Initialize-Random -Seed 12345
 
         Initializes the random number generator with a seed of 12345.
+
+        .EXAMPLE
+        PS> Initialize-Random -DefaultSeed
+
+        Initializes the random number generator with a seed of 0.
 
         .NOTES
         Copyright (c) 2024, John Merryweather Cooper.  All Rights Reserved.
@@ -405,9 +655,18 @@ function Initialize-Random {
         about_Functions_Advanced
 
         .LINK
+        Get-Date
+
+        .LINK
         Set-StrictMode
 
         .LINK
         Set-Variable
+
+        .LINK
+        Write-Debug
+
+        .LINK
+        Write-Verbose
     #>
 }
